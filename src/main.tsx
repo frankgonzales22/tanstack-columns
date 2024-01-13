@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import DynamicTableTry from './DynamicTableTry.tsx'
+import InputOTPPage from './OTP.tsx'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
-    <DynamicTableTry />
+    {/* <DynamicTableTry /> */}
+    <InputOTPPage />
   </>,
 )

@@ -2,21 +2,21 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, getSorte
 import { useMemo, useState } from "react";
 
 
-
 interface TableData {
     category: string;
     value: number;
     date: string;
 }
-
 type DynamicColumn = {
     header: string;
     accessorKey: string;
 }
+interface DynamicDataProps {
+    data :  TableData[]
+}
 
-
-// const DynamicTable = (data: TableData[]) => {
-const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
+const DynamicTable = ({data}: DynamicDataProps) => {
+// const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
     const [transposed, setTransposed] = useState(false);
 
     const tableData = useMemo(() => {
@@ -32,9 +32,9 @@ const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
                     const sum = data
                         .filter((d) => d.category === category && d.date === date)
                         .reduce((acc, item) => acc + item.value, 0);
-                    row[category] = sum !== 0 ? sum : '';
-                });
-                return row;
+                    row[category] = sum !== 0 ? sum : ''
+                })
+                return row
             })
             : uniqueCategories.map((category) => {
                 const row: Record<string, any> = { category };
@@ -44,21 +44,22 @@ const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
                         .reduce((acc, item) => acc + item.value, 0);
                     row[date] = sum !== 0 ? sum : '';
                 });
-                return row;
+                return row
             })
 
-        return rows;
+        return rows
     }, [data, transposed])
 
+    const [headerKey, setHeaderKey] = useState([''])
     const columns = useMemo(() => {
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data.map((item) => item.category)));
         const uniqueDates = Array.from(new Set(data.map((item) => item.date)));
-        console.log('uniqueCateg', uniqueCategories)
+    
         // Create columns dynamically based on categories and dates
         const dynamicColumns: DynamicColumn[] = transposed
             ? [
-                {
+                { 
                     header: 'Date',
                     accessorKey: 'date',
                 },
@@ -88,8 +89,10 @@ const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(), //order doesn't matter anymore!
         // etc.
-    });
+    })
 
+    console.log(columns)
+    console.log(tableData)
 
 
     return (
@@ -99,15 +102,6 @@ const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
             </button>
             <table style={{ border: '1px solid black', margin: '20px' }}>
                 <thead>
-                    {/* {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()} style={{ borderBottom: '1px solid black' }}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()} style={{ padding: '10px' }}>
-                  {column.render('Header')}
-                </th>
-              ))}
-            </tr>
-          ))} */}
                     {tableInstance.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => (
@@ -124,18 +118,6 @@ const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
                     ))}
                 </thead>
                 <tbody >
-                    {/* {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()} style={{ padding: '10px' }}>
-                    {cell.render('Cell')}
-                  </td>
-                ))}
-              </tr>
-            )
-          })} */}
                     {tableInstance.getRowModel().rows.map(row => (
                         <tr key={row.id}>
                             {row.getVisibleCells().map(cell => (
@@ -168,7 +150,7 @@ const DynamicTableTry: React.FC = () => {
             <h1>Dynamic Table Example</h1>
             <DynamicTable data={yourData} />
         </div>
-    );
-};
+    )
+}
 
 export default DynamicTableTry;
