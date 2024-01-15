@@ -7,16 +7,18 @@ interface TableData {
     value: number;
     date: string;
 }
+
 type DynamicColumn = {
     header: string;
     accessorKey: string;
 }
+
 interface DynamicDataProps {
-    data :  TableData[]
+    data: TableData[]
 }
 
-const DynamicTable = ({data}: DynamicDataProps) => {
-// const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
+const DynamicTable = ({ data }: DynamicDataProps) => {
+    // const DynamicTable: React.FC<{ data: TableData[] }> = ({ data }) => {
     const [transposed, setTransposed] = useState(false);
 
     const tableData = useMemo(() => {
@@ -55,11 +57,11 @@ const DynamicTable = ({data}: DynamicDataProps) => {
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data.map((item) => item.category)));
         const uniqueDates = Array.from(new Set(data.map((item) => item.date)));
-    
+
         // Create columns dynamically based on categories and dates
         const dynamicColumns: DynamicColumn[] = transposed
             ? [
-                { 
+                {
                     header: 'Date',
                     accessorKey: 'date',
                 },
@@ -77,7 +79,7 @@ const DynamicTable = ({data}: DynamicDataProps) => {
                     header: date,
                     accessorKey: date,
                 })) as DynamicColumn[]),
-            ];
+            ]
 
         return dynamicColumns as ColumnDef<any>[]; // Cast to less specific type
     }, [data, transposed])
@@ -91,8 +93,8 @@ const DynamicTable = ({data}: DynamicDataProps) => {
         // etc.
     })
 
-    console.log(columns)
-    console.log(tableData)
+    console.log('columns', columns)
+    console.log('table data', tableData)
 
 
     return (
