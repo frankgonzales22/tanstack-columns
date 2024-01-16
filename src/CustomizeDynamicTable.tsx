@@ -94,12 +94,19 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         const uniqueDates = Array.from(new Set(data?.map((item) => item.date)))
 
         // Create columns dynamically based on categories and dates
-        const dynamicColumns: DynamicColumn[] = selectedValue.length > 0 
-        ? [
-            ...selectedValue.map((item, index) => ({
-                header: item?.toString(),
-                accessorKey: item?.toString(),
-            })),
+        const dynamicColumns: DynamicColumn[] =  [
+            // ...selectedValue.map((item, index) => ({
+            //     header: item?.toString(),
+            //     accessorKey: item?.toString(),
+            // }))
+            ...(selectedValue.length > 0 
+                ? selectedValue.map((item) => ({
+                    header: item?.toString(),
+                    accessorKey: item?.toString(),
+                }))
+                : [])
+            
+            ,
             ...(selectedColumn.length > 0
                 ? uniqueCategories.map((category) => ({
                     header: category?.toString(),
@@ -107,7 +114,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                   }))
                 : []),
         ]
-        : [];
+
 
 
 
@@ -131,7 +138,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
             <div>
                 <table style={{ border: '1px solid black', margin: '20px' }}>
                     <thead>
-                        {selectedValue.length !== 0 ? table.getHeaderGroups().map(headerGroup => (
+                        { table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
                                     <th key={header.id} style={{ padding: '10px' }}>
@@ -145,11 +152,11 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                 ))}
                             </tr>
                         ))
-                     : null
+                     
                     }
                     </thead>
                     <tbody >
-                        {selectedValue.length !== 0 ? table.getRowModel().rows.map(row => (
+                        { table.getRowModel().rows.map(row => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id} style={{ padding: '10px' }}>
@@ -158,7 +165,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                 ))}
                             </tr>
                         ))
-                        : null
+                  
                     }
                     </tbody>
                 </table>
