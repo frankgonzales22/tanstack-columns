@@ -17,7 +17,7 @@ interface DynamicDataProps {
 }
 
 interface DropDownProps {
-    selectedValue: string,
+    selectedValue: string | string[],
     handleSelectChange: (event: ChangeEvent<HTMLSelectElement>) => void;
     options: any[]
 }
@@ -26,7 +26,7 @@ const DropDown = ({ selectedValue, handleSelectChange, options }: DropDownProps)
     return (
         <div>
             <label htmlFor="dropdown">Select an option:</label>
-            <select id="dropdown" value={selectedValue} onChange={handleSelectChange}>
+            <select id="dropdown" value={selectedValue} onChange={handleSelectChange} multiple={true}>
                 <option value="">-- Select --</option>
                 {options.map((option, index) => (
                     <option key={index} value={option}>
@@ -49,8 +49,8 @@ const DropDown = ({ selectedValue, handleSelectChange, options }: DropDownProps)
 const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
     // State to track the selected value
-    const [selectedValue, setSelectedValue] = useState<string>('date');
-    const [selectedColumn, setSelectedColumn] = useState<string>('value');
+    const [selectedValue, setSelectedValue] = useState<any[]>(['value']);
+    const [selectedColumn, setSelectedColumn] = useState<string>('');
 
     // Options for the dropdown
     const options = ['date', 'value', 'category'];
@@ -58,7 +58,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
     // Event handler for selecting an option
     const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedValue(event.target.value);
+        setSelectedValue([event.target.value]);
     };
     const handleSelectChange2 = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedColumn(event.target.value);
@@ -88,24 +88,31 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
 
     const columns = useMemo(() => {
+       
         // Extract unique categories and dates from the data
-        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn])));
-        const uniqueDates = Array.from(new Set(data?.map((item) => item.date)));
+        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn])))
+        const uniqueDates = Array.from(new Set(data?.map((item) => item.date)))
 
         // Create columns dynamically based on categories and dates
         const dynamicColumns: DynamicColumn[] = [
-            {
-                header: selectedValue.toString() as string,
-                accessorKey: selectedValue.toString() as string,
-            },
-            ...uniqueCategories.map((category) => ({
-                header: category.toString(),
-                accessorKey: category.toString(),
-            })),
+        
+               
+                ...selectedValue.map((item, index) => ({
+                    header: item?.toString(),
+                    accessorKey: item?.toString(),
+                })),
+               
+            // ...uniqueCategories.map((category) => ({
+            //     header: category?.toString(),
+            //     accessorKey: category?.toString(),
+            // })),
+            
+          
         ]
 
 
-        return dynamicColumns as ColumnDef<any>[]; // Cast to less specific type
+        return dynamicColumns as ColumnDef<any>[]
+        
     }, [data, selectedValue, selectedColumn])
 
     const table = useReactTable({
@@ -124,7 +131,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
             <div>
                 <table style={{ border: '1px solid black', margin: '20px' }}>
                     <thead>
-                        {table.getHeaderGroups().map(headerGroup => (
+                        {selectedValue.length !== 0 ? table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
                                     <th key={header.id} style={{ padding: '10px' }}>
@@ -137,10 +144,12 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                     </th>
                                 ))}
                             </tr>
-                        ))}
+                        ))
+                     : null
+                    }
                     </thead>
                     <tbody >
-                        {table.getRowModel().rows.map(row => (
+                        {selectedValue.length !== 0 ? table.getRowModel().rows.map(row => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id} style={{ padding: '10px' }}>
@@ -148,18 +157,20 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                     </td>
                                 ))}
                             </tr>
-                        ))}
+                        ))
+                        : null
+                    }
                     </tbody>
                 </table>
             </div>
             <DropDown
-                selectedValue={selectedValue}
+                selectedValue={selectedValue ? selectedValue : 'category'}
                 options={options}
                 handleSelectChange={(e) => handleSelectChange(e)} />
-            <DropDown
+            {/* <DropDown
                 selectedValue={selectedColumn}
                 options={options2}
-                handleSelectChange={(e) => handleSelectChange2(e)} />
+                handleSelectChange={(e) => handleSelectChange2(e)} /> */}
         </>
     )
 }
