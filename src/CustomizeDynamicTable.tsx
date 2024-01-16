@@ -64,62 +64,32 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         setSelectedColumn([event.target.value]);
     };
 
-
-    // const tableData = useMemo(() => {
-    //     // Extract unique categories and dates from the data
-    //     const uniqueCategories = Array.from(new Set(data?.map((item) => item.category)));
-    //     const uniqueDates = Array.from(new Set(data?.map((item) => item.date)));
-
-    //     // Create rows dynamically based on categories and dates
-    //     const rows: Record<string, any>[]  =
-    //          uniqueDates.map((date) => {
-    //             const row: Record<string, any> = { date };
-    //             uniqueCategories.forEach((category) => {
-    //                 const sum = data
-    //                     .filter((d) => d.category === category && d.date === date)
-    //                     .reduce((acc, item) => acc + item.value, 0);
-    //                 row[category] = sum !== 0 ? sum : ''
-    //             })
-    //             return row
-    //         })
-
-    // }, [data])
-
-
-
     const columns = useMemo(() => {
-       
+
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn[0]])))
         const uniqueDates = Array.from(new Set(data?.map((item) => item.date)))
 
         // Create columns dynamically based on categories and dates
-        const dynamicColumns: DynamicColumn[] =  [
-            // ...selectedValue.map((item, index) => ({
-            //     header: item?.toString(),
-            //     accessorKey: item?.toString(),
-            // }))
-            ...(selectedValue.length > 0 
+        const dynamicColumns: DynamicColumn[] = [
+
+            ...(selectedValue[0] !== '' && selectedValue.length >0
                 ? selectedValue.map((item) => ({
                     header: item?.toString(),
                     accessorKey: item?.toString(),
                 }))
                 : [])
-            
             ,
-            ...(selectedColumn.length > 0
+            ...(selectedColumn[0] !== '' && selectedColumn.length >0
                 ? uniqueCategories.map((category) => ({
                     header: category?.toString(),
                     accessorKey: category?.toString(),
-                  }))
+                }))
                 : []),
         ]
 
-
-
-
         return dynamicColumns as ColumnDef<any>[]
-        
+
     }, [data, selectedValue, selectedColumn])
 
     const table = useReactTable({
@@ -138,7 +108,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
             <div>
                 <table style={{ border: '1px solid black', margin: '20px' }}>
                     <thead>
-                        { table.getHeaderGroups().map(headerGroup => (
+                        {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
                                     <th key={header.id} style={{ padding: '10px' }}>
@@ -151,12 +121,10 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                     </th>
                                 ))}
                             </tr>
-                        ))
-                     
-                    }
+                        ))}   
                     </thead>
                     <tbody >
-                        { table.getRowModel().rows.map(row => (
+                        {table.getRowModel().rows.map(row => (
                             <tr key={row.id}>
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id} style={{ padding: '10px' }}>
@@ -164,14 +132,12 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                     </td>
                                 ))}
                             </tr>
-                        ))
-                  
-                    }
+                        ))}
                     </tbody>
                 </table>
             </div>
             <DropDown
-                selectedValue={selectedValue ? selectedValue : ''}
+                selectedValue={selectedValue}
                 options={options}
                 handleSelectChange={(e) => handleSelectChange(e)} />
             <DropDown
