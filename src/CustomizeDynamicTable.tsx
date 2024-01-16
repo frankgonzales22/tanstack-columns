@@ -50,7 +50,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
     // State to track the selected value
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
-    const [selectedColumn, setSelectedColumn] = useState<string>('');
+    const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
 
     // Options for the dropdown
     const options = ['date', 'value', 'category'];
@@ -61,7 +61,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         setSelectedValue([event.target.value]);
     };
     const handleSelectChange2 = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedColumn(event.target.value);
+        setSelectedColumn([event.target.value]);
     };
 
 
@@ -90,20 +90,22 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     const columns = useMemo(() => {
        
         // Extract unique categories and dates from the data
-        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn])))
+        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn[0]])))
         const uniqueDates = Array.from(new Set(data?.map((item) => item.date)))
 
         // Create columns dynamically based on categories and dates
-        const dynamicColumns: DynamicColumn[] = selectedValue.length > 0
+        const dynamicColumns: DynamicColumn[] = selectedValue.length > 0 
         ? [
             ...selectedValue.map((item, index) => ({
                 header: item?.toString(),
                 accessorKey: item?.toString(),
             })),
-            // ...uniqueCategories.map((category) => ({
-            //     header: category?.toString(),
-            //     accessorKey: category?.toString(),
-            // })),
+            ...(selectedColumn.length > 0
+                ? uniqueCategories.map((category) => ({
+                    header: category?.toString(),
+                    accessorKey: category?.toString(),
+                  }))
+                : []),
         ]
         : [];
 
@@ -165,10 +167,10 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                 selectedValue={selectedValue ? selectedValue : ''}
                 options={options}
                 handleSelectChange={(e) => handleSelectChange(e)} />
-            {/* <DropDown
+            <DropDown
                 selectedValue={selectedColumn}
                 options={options2}
-                handleSelectChange={(e) => handleSelectChange2(e)} /> */}
+                handleSelectChange={(e) => handleSelectChange2(e)} />
         </>
     )
 }
