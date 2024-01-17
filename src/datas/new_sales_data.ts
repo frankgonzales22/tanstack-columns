@@ -15,7 +15,7 @@ export type SummaryComp = {
     
   }
 
-const summaryCompData = 
+export const summaryCompData = 
 [
   {
     "territoryCode": "",

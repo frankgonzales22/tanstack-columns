@@ -5,6 +5,7 @@ import './index.css'
 import DynamicTableTry from './DynamicTableTry.tsx'
 import InputOTPPage from './OTP.tsx'
 import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
+import summaryCompData from './datas/new_sales_data.ts'
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -15,11 +16,13 @@ const yourData = [
   { category: 'D', value: 910, date: '2023-01-01' },
   { category: 'C', value: 330, date: '2023-01-03' },
 ];
+
+const data = summaryCompData
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   
   <>
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
-    <CustomizeDynamicTable data={yourData} />
+    <CustomizeDynamicTable data={data} />
   </>,
 )
