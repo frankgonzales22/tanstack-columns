@@ -65,13 +65,13 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         // Extract unique categories and dates from the data
         const selVal =  [selectedValue[0]]
         const selCol =  [selectedColumn[0]]
-        const uniqueCategories = Array.from(new Set(data.map((item) => item[selectedColumn[0]])));
-        const uniqueDates = Array.from(new Set(data.map((item) => item[selectedValue[0]])));
+        const uniqueSelectedColumn = Array.from(new Set(data.map((item) => item[selectedColumn[0]])));
+        const uniqueSelectedValue = Array.from(new Set(data.map((item) => item[selectedValue[0]])));
 
         // Create rows dynamically based on categories and dates
-        const rows: Record<string, any>[] = uniqueDates.map((date) => {
+        const rows: Record<string, any>[] = uniqueSelectedValue.map((date) => {
                 const row: Record<string, any> = { [selectedValue[0]]: date }
-                uniqueCategories.forEach((category) => {
+                uniqueSelectedColumn.forEach((category) => {
                     const sum = data
                         .filter((d) => d[selectedColumn[0]] === category && d[selectedValue[0]] === date)
                         .reduce((acc, item) => acc + item.value, 0)
