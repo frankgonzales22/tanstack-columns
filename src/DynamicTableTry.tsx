@@ -24,6 +24,7 @@ const DynamicTable = ({ data }: DynamicDataProps) => {
     const tableData = useMemo(() => {
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data.map((item) => item.category)));
+        
         const uniqueDates = Array.from(new Set(data.map((item) => item.date)));
 
         // Create rows dynamically based on categories and dates
