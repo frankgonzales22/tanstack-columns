@@ -23,6 +23,8 @@ interface DropDownProps {
 }
 
 const DropDown = ({ selectedValue, handleSelectChange, options }: DropDownProps) => {
+
+        
     return (
         <div>
             <label htmlFor="dropdown">Select an option:</label>
@@ -50,10 +52,16 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
     const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
 
+    const uniqueProperties = Array.from(
+        new Set(data.flatMap((item) => Object.keys(item)))
+      );
+      
+      console.log(uniqueProperties)
     // Options for the dropdown
-    const options = ['date', 'value', 'category'];
-    const options2 = ['date', 'value', 'category'];
+    const options = uniqueProperties
+    const options2 = uniqueProperties
 
+    // console.log(Array.from(new Set(data.map(item) => item)))
     // Event handler for selecting an option
     const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
         setSelectedValue([event.target.value]);
