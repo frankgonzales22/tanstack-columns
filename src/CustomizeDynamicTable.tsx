@@ -119,7 +119,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     const columns = useMemo(() => {
 
         // Extract unique categories and dates from the data
-        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn[0]])))
+        const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn[0] as any])))
         console.log('unik kateg', uniqueCategories)
         // Create columns dynamically based on categories and dates
         const dynamicColumns: DynamicColumn[] = [

@@ -6,6 +6,9 @@ import DynamicTableTry from './DynamicTableTry.tsx'
 import InputOTPPage from './OTP.tsx'
 import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
 import summaryCompData from './datas/new_sales_data.ts'
+import summaryCompData1 from './datas/summaryComp.ts'
+import AntTable from './AntTable.tsx'
+
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -18,11 +21,15 @@ const yourData = [
 ];
 
 const data = summaryCompData
+
+const quota = summaryCompData1
+console.log(quota)
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  
   <>
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
-    <CustomizeDynamicTable data={data} />
+    {/* <CustomizeDynamicTable data={quota} /> */}
+  <AntTable />  
   </>,
 )

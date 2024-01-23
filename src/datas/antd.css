@@ -1,0 +1,100 @@
+.ant-table {
+    /* border: .5px solid #d9d9d9; */
+}
+
+/* Add border to table header */
+.ant-table-thead>tr>th {
+    /* border: 1px solid #d9d9d9; */
+}
+
+/* Add border to table body rows */
+/* .ant-table-tbody > tr > td {
+    border: 1px solid #d9d9d9;
+  } */
+
+/* Add border to individual tags */
+.ant-tag {
+    border: 1px solid #15191d;
+}
+
+
+
+
+
+/* .ant-table-cell {
+    background-color: green;
+   } */
+
+/* .ant-table .ant-table-container .ant-table-content
+ table thead.ant-table-thead  */
+/* .ant-table-cell 
+  */
+
+/* table thead.ant-table-thead .ant-table-cell{
+    background-color: rgb(77, 161, 77);
+    color: whitesmoke;
+} */
+/* 
+body table .tableHeader{
+    background-color: rgb(77, 161, 77);
+    color: whitesmoke;
+} */
+
+.ant-table .tableHeader {
+    background-color: rgb(101, 213, 101) !important;
+    /* Replace with your desired color code or name */
+}
+
+.ant-table-cell {
+    box-shadow: 1px solid #bdc7d2;
+}
+
+/* body > .ant-table-content > .ant-table-thead {
+    background-color: green;
+} */
+/* thead > tr .ant-table-cell{
+    background-color:  green;
+   }
+   .ant-table-tbody > tr > td {
+    border: 1px solid #d9d9d9;
+  } */
+
+/* .ant-tag {
+    border: 1px solid #1890ff;
+  }
+  
+   */
+
+
+.ant-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.ant-table th,
+.ant-table td {
+    border: 1px solid black;
+    /* Replace with your desired border color code or name */
+    padding: 8px;
+    /* Optional: Adjust padding for better appearance */
+    border-collapse: separate;
+}
+
+.ant-table th,
+.ant-table td {
+    border: 1px solid black;
+    outline: 1px solid black;
+    border-right: 1px solid     ;
+
+    /* Border to the right of each cell */
+    
+    border: 1px solid black;
+    border-bottom: 1px solid    ;
+    /* Border below each cell */
+}
+
+.ant-table th:last-child,
+.ant-table td:last-child {
+    border-right: 0;
+    /* Remove right border for the last cell in each row */
+}
