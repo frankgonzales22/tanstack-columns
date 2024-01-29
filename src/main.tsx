@@ -8,6 +8,9 @@ import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
 import summaryCompData from './datas/new_sales_data.ts'
 import summaryCompData1 from './datas/summaryComp.ts'
 import AntTable from './AntTable.tsx'
+import FinalDrop from './DragNDrop/FinalDrop.tsx'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -29,7 +32,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
-    <CustomizeDynamicTable data={quota} />
-  {/* <AntTable />   */}
+    <DndProvider backend={HTML5Backend}>
+      <CustomizeDynamicTable data={quota} />
+      {/* <FinalDrop /> */}
+
+    </DndProvider>
+
+    {/* <AntTable />   */}
   </>,
 )
