@@ -151,7 +151,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     console.log('table data', tableData)
     return (
         <>
-            <div style={{ maxWidth: '400px', overflow: 'auto' }}>
+            <div style={{ maxWidth: '800px', overflow: 'auto' }}>
                 <table style={{ border: '1px solid black', margin: '20px' }}>
                     <thead>
                         {table.getHeaderGroups().map(headerGroup => (
