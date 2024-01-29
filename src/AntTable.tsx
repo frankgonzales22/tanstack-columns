@@ -52,7 +52,9 @@ const COMLUMNS =
 
         { column: 'CVE', parent: 'NON-COMMISIONABLE' },
         { column: 'ADE', parent: 'NON-COMMISIONABLE' },
-        { column: 'LAPSE LIMIT', parent: 'NON-COMMISIONABLE' },
+        {
+            column: 'LAPSE LIMIT', parent: 'NON-COMMISIONABLE',
+        }
     ]
 
 
@@ -71,27 +73,28 @@ const AntTable: React.FC = () => (
     //     </ColumnGroup>
     // </Table>
     <Table dataSource={data} pagination={false} bordered>
-    <Column title="MONTH" dataIndex="age" key="age" className=""
-      sorter={(a: any, b: any) => a.age - b.age}
-    />
-    {COLUMNGROUP.map((group) => (
-      <ColumnGroup key={group} title={group} className="tableHeader">
-        {(COMLUMNS.filter((col) => col?.parent === group) as {
-          column: string; 
-          dataKey?: string;
-        }[]).map((col) => (
-          <Column
-            key={col.dataKey}
-            title={col.column}
-            dataIndex={col.dataKey || col.column.toLowerCase()}
-            sorter={(a: any, b: any) =>
-              a[col.dataKey || col.column.toLowerCase()] - b[col.dataKey || col.column.toLowerCase()]
-            }
-          />
+        <Column title="MONTH" dataIndex="age" key="age" className=""
+            sorter={(a: any, b: any) => a.age - b.age}
+        />
+        {COLUMNGROUP.map((group) => (
+            <ColumnGroup key={group} title={group} className="tableHeader">
+                {(COMLUMNS.filter((col) => col?.parent === group) as {
+                    column: string;
+                    dataKey?: string;
+                }[]).map((col) => (
+                    <Column
+                        key={col.dataKey}
+                        title={col.column}
+                        dataIndex={col.dataKey || col.column.toLowerCase()}
+                        sorter={(a: any, b: any) =>
+                            a[col.dataKey || col.column.toLowerCase()] - b[col.dataKey || col.column.toLowerCase()] 
+                        }
+                        
+                    />
+                ))}
+            </ColumnGroup>
         ))}
-      </ColumnGroup>
-    ))}
-  </Table>
+    </Table>
 
 );
 

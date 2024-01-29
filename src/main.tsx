@@ -23,13 +23,13 @@ const yourData = [
 const data = summaryCompData
 
 const quota = summaryCompData1
-console.log(quota)
+// console.log(quota)
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
-    {/* <CustomizeDynamicTable data={quota} /> */}
-  <AntTable />  
+    <CustomizeDynamicTable data={quota} />
+  {/* <AntTable />   */}
   </>,
 )

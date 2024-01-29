@@ -68,15 +68,6 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         setItem([event.target.value])
     }
 
-    // const handleSelectRow = (event: ChangeEvent<HTMLSelectElement>) => {
-    //     setSelectedRow([event.target.value]);
-    // };
-    // const handleSelectColumn = (event: ChangeEvent<HTMLSelectElement>) => {
-    //     setSelectedColumn([event.target.value]);
-    // };
-    // const handleSelecteValue = (event: ChangeEvent<HTMLSelectElement>) => {
-    //     setSelectedValue([event.target.value]);
-    // };
 
     const sumProperty = (data: any[], propertyName: string) => {
         return data.reduce((acc, item) => acc + parseFloat(item[propertyName] || 0), 0);
@@ -85,63 +76,67 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     const tableData = useMemo(() => {
         // Extract unique values for selected column and selected value
         const uniqueSelectedColumn = Array.from(new Set(data.map((item) => item[selectedColumn[0]])));
-        const uniqueSelectedRow = Array.from(new Set(data.map((item) => item[selectedRow[0]])));
-
+      
         // Create rows dynamically based on selected column and selected value
-        const rows: Record<string, any>[] = uniqueSelectedRow.map((date) => {
-            const row: Record<string, any> = { [selectedRow[0]]: date };
-
+        const rows: Record<string, any>[] = [];
+      
+        data.forEach((item) => {
+          const rowKey = item[selectedRow[0]];
+          const existingRow = rows.find((row) => row[selectedRow[0]] === rowKey) ?? { [selectedRow[0]]: rowKey };
+      
+          if (!rows.some((row) => row[selectedRow[0]] === rowKey)) {
             uniqueSelectedColumn.forEach((category) => {
-                const categoryData = data.filter((d) => d[selectedColumn[0]] === category && d[selectedRow[0]] === date);
-
-                console.log('categoryData', categoryData); // Log the data used for summing
-
-                const sum = sumProperty(categoryData, selectedValue[0]); // Change 'value' to the desired property
-
-                console.log('sum', sum); // Log the final sum
-
-                row[category] = !isNaN(sum) ? sum : ''; // Check for NaN before assigning to row
+              existingRow[category] = '';
             });
-
-            console.log('row', row); // Log the final row
-            return row;
+            rows.push(existingRow);
+          }
+      
+          const category = item[selectedColumn[0]];
+          const sum = sumProperty(data.filter((d) => d[selectedColumn[0]] === category && d[selectedRow[0]] === rowKey), selectedValue[0]);
+          existingRow[`column_${String(category)}`] = !isNaN(sum) ? sum : ''; // Use the same naming convention
         });
-
-        console.log('rowssss', rows);
+      
         return rows;
-    }, [data, selectedRow, selectedColumn, selectedValue]);
-
-    // console.log(tableData)
-
-
-
+      }, [data, selectedRow, selectedColumn, selectedValue]);
 
     const columns = useMemo(() => {
-
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data?.map((item) => item[selectedColumn[0] as any])))
         console.log('unik kateg', uniqueCategories)
         // Create columns dynamically based on categories and dates
+        // const dynamicColumns: DynamicColumn[] = [
+
+        //     ...(selectedRow[0] !== '' && selectedRow.length > 0
+        //         ? selectedRow.map((item) => ({
+        //             header: item?.toString(),
+        //             accessorKey: item?.toString(),
+        //         }))
+        //         : [])
+        //     ,
+        //     ...(selectedColumn[0] !== '' && selectedColumn.length > 0
+        //         ? uniqueCategories.map((category) => ({
+        //             header: category?.toString(),
+        //             accessorKey: category?.toString(),
+        //         }))
+        //         : []),
+        // ]
         const dynamicColumns: DynamicColumn[] = [
-
             ...(selectedRow[0] !== '' && selectedRow.length > 0
-                ? selectedRow.map((item) => ({
-                    header: item?.toString(),
-                    accessorKey: item?.toString(),
+              ? selectedRow.map((item) => ({
+                  header: item?.toString(),
+                  accessorKey: item?.toString(), // Use a string identifier for rows
                 }))
-                : [])
-            ,
+              : []),
             ...(selectedColumn[0] !== '' && selectedColumn.length > 0
-                ? uniqueCategories.map((category) => ({
-                    header: category?.toString(),
-                    accessorKey: category?.toString(),
+              ? uniqueCategories.map((category) => ({
+                  header: String(category), // Ensure header is a string
+                  accessorKey: `column_${String(category)}`, // Use a string identifier for columns
                 }))
-                : []),
-        ]
-
+              : []),
+          ];
         return dynamicColumns as ColumnDef<any>[]
-
     }, [data, selectedRow, selectedColumn])
+
 
     const table = useReactTable({
         columns,
@@ -151,10 +146,10 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         getSortedRowModel: getSortedRowModel(),
     })
 
-
+    console.log('table data', tableData)
     return (
         <>
-            <div>
+            <div style={{ maxWidth: '400px', overflow: 'auto' }}>
                 <table style={{ border: '1px solid black', margin: '20px' }}>
                     <thead>
                         {table.getHeaderGroups().map(headerGroup => (

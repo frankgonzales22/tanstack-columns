@@ -53,7 +53,6 @@ const DynamicTable = ({ data }: DynamicDataProps) => {
         return rows
     }, [data, transposed])
 
-    const [headerKey, setHeaderKey] = useState([''])
     const columns = useMemo(() => {
         // Extract unique categories and dates from the data
         const uniqueCategories = Array.from(new Set(data.map((item) => item.category)));
