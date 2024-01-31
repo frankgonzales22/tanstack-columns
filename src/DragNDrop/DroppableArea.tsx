@@ -27,7 +27,7 @@ const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedIte
       }}
     >
       {title}
-      <h4>{droppedItem}</h4>
+      <h4>{droppedItem.join(' ')}</h4>
     </div>
   );
 };
