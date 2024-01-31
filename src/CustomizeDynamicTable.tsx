@@ -35,36 +35,34 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     const tableData = useMemo(() => {
         const rows: Record<string, any>[] = [];
         data.forEach((item) => {
-          const rowKey = item[selectedRow[0]];
-          const existingRow = rows.find((row) => row[selectedRow[0]] === rowKey) ?? {
-            [selectedRow[0]]: rowKey,
-            children: [], // Add a 'children' property for hierarchical structure
-          };
-    
-          if (!rows.some((row) => row[selectedRow[0]] === rowKey)) {
-            rows.push(existingRow);
-          }
-    
-          const category = item[selectedColumn[0]];
-          const sum = sumProperty(
-            data.filter(
-              (d) =>
-                d[selectedColumn[0]] === category && d[selectedRow[0]] === rowKey
-            ),
-            selectedValue[0]
-          );
-    
-          const childRow = {
-            [selectedRow[1]]: item[selectedRow[1]], // Assuming selectedRow[1] is the child row key
-            [`column_${String(category)}`]: !isNaN(sum) ? sum : '',
-          };
-    
-          existingRow.children.push(childRow);
+            const parentRowKey = item[selectedRow[0]];
+            const childRowKey = item[selectedRow[1]];
+
+            // Find or create the parent row
+            let parentRow = rows.find((row) => row[selectedRow[0]] === parentRowKey);
+            if (!parentRow) {
+                parentRow = { [selectedRow[0]]: parentRowKey, children: [] };
+                rows.push(parentRow);
+            }
+
+            // Find or create the child row under the parent
+            let childRow = parentRow.children.find((row  : any) => row[selectedRow[1]] === childRowKey);
+            if (!childRow) {
+                childRow = { [selectedRow[1]]: childRowKey };
+                parentRow.children.push(childRow);
+            }
+
+            // Populate data for the selected columns and values
+            const category = item[selectedColumn[0]];
+            const sum = sumProperty(
+                data.filter((d) => d[selectedColumn[0]] === category && d[selectedRow[0]] === parentRowKey),
+                selectedValue[0]
+            );
+            childRow[`column_${String(category)}`] = !isNaN(sum) ? sum : '';
         });
-        console.log('rows',rows)
+        console.log(rows)
         return rows;
-        
-      }, [data, selectedRow, selectedColumn, selectedValue]);
+    }, [data, selectedRow, selectedColumn, selectedValue]);
 
 
     const columns = useMemo(() => {

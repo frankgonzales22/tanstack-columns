@@ -48,7 +48,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
     <DndProvider backend={HTML5Backend}>
-      <CustomizeDynamicTable data={quota} />
+      <CustomizeDynamicTable data={newsale} />
       {/* <TryExpand data={yourData}/> */}
       {/* <FinalDrop /> */}
 
