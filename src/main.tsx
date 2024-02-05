@@ -35,7 +35,7 @@ const quota = summaryCompData1
 const newsale = newsales
 
 
-console.log(newsale)
+// console.log(newsale)
 const modifiedItems: any[] = newsale.map((item) => ({
   territoryCode: item.territoryCode,
   regionCode: item.regionCode,
