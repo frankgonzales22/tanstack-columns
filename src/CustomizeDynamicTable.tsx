@@ -18,18 +18,16 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
     useEffect(() => {
         // setGrouping([...selectedRow])
-        setGrouping(['territoryCode', 'regionCode'])
+        setGrouping(selectedRow)
     }, [selectedRow])
 
 
     const dynamicColumns: any[] = useMemo(() => {
-
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
                 ? selectedRow.map((item) => ({
                     header: item?.toString(),
                     accessorKey: item?.toString(),
-
                 }))
                 : []),
             ...(selectedColumn[0] !== '' && selectedColumn.length > 0
@@ -38,19 +36,25 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                     header: `${String(columnName)}`,
                     id: `column_${String(columnName)}`,
                     accessorKey: `column_${String(columnName)}`,
-                  
                     aggregatedCell: (props: any) => {
-              
                           const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
-                            const columnValue = leafRow.original[selectedColumn[0]];
+                            const columnId = leafRow.original[selectedColumn[0]];
                             const variance = leafRow.original[selectedValue[0]];
-                            
-                            return `column_${columnValue}` === props.column.id ? sum + (variance ?? 0) : sum;
-                          }, 0) ?? 0;
+                            const checkValue = isNaN(props.row.leafRows[0].original[selectedValue[0]])
 
+                            if(checkValue){
+                                const count = variance ? 1 : 0
+                                return `column_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
+                            }else{
+                                return `column_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
+                            }
+
+                            
+                          }, 0) ?? 0;
+                      
+                         const item =  props.row.leafRows.map((item : any) => item.original[selectedValue[0]])
                         return <div>{sumOfVariance}</div>
-                        //  
-                    
+
                     },
                     cell:
                         (props: any) => {
@@ -87,8 +91,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
 
     const handleRow = (item: { name: string }) => {
         setSelectedRowDrop([...selectedRowDrop, item.name]);
-        setSelectedRow([...selectedRow, item.name]);
-
+        setSelectedRow([...selectedRow, item.name])
     };
 
     const handleColumn = (item: { name: string }) => {
