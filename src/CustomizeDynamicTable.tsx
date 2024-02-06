@@ -124,13 +124,13 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         // const rowKey = item[selectedRow[0]];
         // const category = item[selectedColumn[0]];
         // const sum = data.filter((d) => d[selectedColumn[0]] === category && d[selectedRow[0]] === rowKey)
-        
+
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
                 ? selectedRow.map((item) => ({
                     header: item?.toString(),
                     accessorKey: item?.toString(),
-        
+
                 }))
                 : []),
             ...(selectedColumn[0] !== '' && selectedColumn.length > 0
@@ -139,21 +139,52 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                     header: `${String(columnName)}`,
                     id: `column_${String(columnName)}`,
                     accessorKey: `column_${String(columnName)}`,
-                    aggregatedCell : (props : any) => {
-                        const sumOfVariance = props.row?.leafRows?.reduce((sum : any, leafRow : any)  => {
-                            const variance = leafRow?.original?.[selectedValue[0]];
-                            return sum + (variance ?? 0); // If variance is null or undefined, treat it as 0
-                          }, 0) ?? 0; 
-                        return  <div>{sumOfVariance}</div>
-                    },
-                    cell : 
-                    (props : any) => {
-                        const varianceValues = props.row.original[selectedValue[0]] ;
+                    // aggregatedCell : (props : any) => {
+                    //     const sumOfVariance = props.row?.leafRows?.reduce((sum : any, leafRow : any)  => {
+                    //         const variance = leafRow?.original?.[selectedValue[0]];
+                    //         return sum + (variance ?? 0); // If variance is null or undefined, treat it as 0
+                    //       }, 0) ?? 0; 
+                    //     return  <div>{sumOfVariance}</div>
+                    // },
+                    // cell : 
+                    // (props : any) => {
+                    //     const varianceValues = props.row.original[selectedValue[0]] ;
 
-                        return  <div>{varianceValues}</div>
+                    //     return  <div>{varianceValues}</div>
+                    // },
+                    aggregatedCell: (props: any) => {
+                        // const sumOfVariance = props.row?.leafRows?.reduce((sum : any, leafRow : any)  => {
+                        //     const variance = leafRow?.original?.[selectedValue[0]];
+                        //     return sum + (variance ?? 0); // If variance is null or undefined, treat it as 0
+                        //   }, 0) ?? 0; 
+                          const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
+                            const columnValue = leafRow.original[selectedColumn[0]];
+                            const variance = leafRow.original[selectedValue[0]];
+                            
+                            return `column_${columnValue}` === props.column.id ? sum + (variance ?? 0) : sum;
+                          }, 0) ?? 0;
+
+                          const getId = props.row?.leafRows.map(( i : any) => i.original[selectedColumn[0]])
+                        return <div>{sumOfVariance}</div>
+                        //  
+                        return console.log(props.row.leafRows[0].original[selectedColumn[0]])
+                        // return <div>
+
+                        //     {/* {props.column.id === `column_${props.row.original[selectedColumn[0]]}` ? sumOfVariance : '0'} */}
+                        //     {/* <br />
+                        //     row id : {props.row.id} */}
+                        //     <br />
+                        //     col id : {props.column.id }
+                        // </div>
+                        return console.log(props.row?.leafRows[0].original[selectedColumn[0]])
                     },
-                    // aggregatedCell : (props : any) => <div>{props.row.original[selectedValue as any]}</div>,
-                    // aggregationFn: 'sum'
+                    cell:
+                        (props: any) => {
+                            const varianceValues = props.row.original[selectedColumn[0]];
+                            const value =  parseFloat(props.row.original[selectedValue[0]]);
+
+                            return <div>{`column_${varianceValues}` === props.column.id ? value.toFixed(2) : ''}</div>
+                        },
                 }))
                 : []),
         ];
