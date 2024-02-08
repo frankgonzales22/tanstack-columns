@@ -1,15 +1,23 @@
-import { Box, HStack, Button } from "@chakra-ui/react";
-import { ColumnDef, ColumnOrderState, ExpandedState, GroupingState, flexRender, getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { Box, Button, HStack } from "@chakra-ui/react";
+import { ColumnOrderState, ExpandedState, GroupingState, flexRender, getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
-import DroppableArea from "./DragNDrop/DroppableArea";
 import DraggableItem from "./DragNDrop/DraggableItem";
+import DroppableArea from "./DragNDrop/DroppableArea";
+
 
 
 interface DynamicDataProps {
     data: any[];
 }
+interface NestedColumn {
+    header: string;
+    id: string;
+    accessorKey: string;
+    columns?: NestedColumn[];
+  }
+  
 
-const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
+const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
     const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any[]>([]);
@@ -23,20 +31,9 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         setGrouping(selectedRow)
     }, [selectedRow])
 
-    const generateNestedArrays = (arr: any[], index: number): any[] => {
-        const reversedArray = arr.slice().reverse(); // Create a copy of the array and reverse it
-        if (index >= reversedArray.length) return []; // Base case: stop recursion if index exceeds array length
-        return [
-            {
-                value: reversedArray[index],
-                children: generateNestedArrays(reversedArray, index + 1), // Recursively generate children
-            },
-        ];
-    };
 
-    
-    const dynamicArray = ['ay', 'a2', 'a3']
-    console.log('ngek ngok', generateNestedArrays(dynamicArray, 0))
+
+    // console.log(generateNestedArrays(dynamicArray, 0))
     const dynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
@@ -47,11 +44,13 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                 : []),
             ...(selectedColumn.length > 0
                 ? Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map((columnName, itemIndex) =>
+
                 (
                     {
                         header: `${String(columnName)}`,
                         id: `column_${String(columnName)}`,
                         accessorKey: `column_${String(columnName)}`,
+
                         aggregatedCell: (props: any) => {
                             const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
                                 const columnId = leafRow.original[selectedColumn[0]];
@@ -64,106 +63,98 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                     return `column_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
                                 }
                             }, 0) ?? 0;
-                            // return
-                            return <div>{sumOfVariance}</div>
+                            return
+                            // return <div>{sumOfVariance}</div>
                         },
                         cell: (props: any) => {
                             const varianceValues = props.row.original[selectedColumn[0]];
                             const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
                             return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
                         },
+                        columns: [
+                            {
+                                header: `${String(columnName)}_1`,
+                                id: `column_${String(columnName)}_1`,
+                                accessorKey: `column_${String(columnName)}_1`,
+
+                                cell: (props: any) => {
+                                    const varianceValues = props.row.original[selectedColumn[0]];
+                                    const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
+
+                                    // return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
+                                    return <div>{props.cell.id}</div>
+                                },
+                            },
+                            {
+                                header: `${String(columnName)}`,
+                                id: `column_${String(columnName)}`,
+                                accessorKey: `column_${String(columnName)}`,
+                                cell: (props: any) => {
+                                    const varianceValues = props.row.original[selectedColumn[0]];
+                                    const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
+
+                                    // return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
+                                    return <div>{props.cell.id}</div>
+                                },
+                            }
+                        ]
                     }))
                 : [])
         ];
     }, [data, selectedRow, selectedColumn, selectedValue])
 
+   
 
+
+    const arrayOfSelected = [ 'yrSale', 'yearNMonthSale', 'territoryCode'];
+    const testMultiLayer = [
+        { name: 'frank', age: 23, status : 'blank' },
+        { name: 'cyrel', age: 23, status : 'blank'},
+        { name: 'cyrel', age: 25, status : 'blank'},
+        { name: 'baldwin', age: 24, status : 'not blank'},
+        { name: 'frank', age: 24,status : 'not blank' },
+        { name: 'baldwin', age: 22, status : 'not blank'},
+        { name: 'frank', age: 22, status : 'not blank'},
+        { name: 'baldwin', age: 21,status : 'not blank' }
+    ];
 
 
     //#region  TRY MULTIPLE LAYERED COLUMNS
-    const generateNestedColumns = (arr: any[], index: number): any[] => {
-        const reversedArray = arr.slice().reverse(); // Create a copy of the array and reverse it
-        if (index >= reversedArray.length) return []; // Base case: stop recursion if index exceeds array length
-        return [
-            {
-                header: reversedArray[index]?.toString(),
-                accessorKey: `column_${String(reversedArray[index])}`,
-                columns: generateNestedColumns(reversedArray, index + 1), // Recursively generate children
-            },
-        ];
+    const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer: any[]): any[] => {
+        // Collect all unique values for each item in arrayOfSelected
+        const uniqueValuesMap: Map<string, Set<any>> = new Map();
+        arrayOfSelected.forEach((columnName) => {
+            const uniqueValues: Set<any> = new Set(testMultiLayer.map((item) => item[columnName]));
+            uniqueValuesMap.set(columnName, uniqueValues);
+        });
+    
+        // Get the name of the first item in arrayOfSelected as the parent name
+        const parentName = arrayOfSelected[0];
+    
+        // Generate nested columns hierarchy based on unique values
+        const generateColumnsForItem = (index: number, parentName: string): NestedColumn[] => {
+            const columnName = arrayOfSelected[index];
+            const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
+    
+            const columns: NestedColumn[] = uniqueValues.map(value => ({
+                header: String(value),
+                id: index === 0 ? String(value) : `${parentName}_${value}`,
+                accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
+            }));
+    
+            // If there are more levels to generate, recursively generate columns for the next level
+            if (index < arrayOfSelected.length - 1) {
+                columns.forEach(column => {
+                    column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
+                });
+            }
+            return columns;
+        };
+        // Initialize generation with the first item in arrayOfSelected
+        return generateColumnsForItem(0, parentName);
     };
-
-
-
-    const multiLayeredColumns: any[] = useMemo(() => {
-        // dynamicArray.reverse().map(i => console.log('item reverse :', i))
-        // data.map((item) => item[selectedColumn[0]])
-        //     .map(columnName => console.log('colname', columnName))
-        Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map(columnName => console.log('nsd', columnName))
-
-        selectedColumn.length > 0 ?
-            selectedColumn.map((i, index) =>
-                data.map(item => item[i])
-                    .map(uniqueColumn =>
-                        //  console.log('uniqueColumn', uniqueColumn)
-                        uniqueColumn
-                    )
-
-            ) : null
-        return [
-            ...(selectedRow[0] !== '' && selectedRow.length > 0
-                ? selectedRow.map((item) => ({
-                    header: item?.toString(),
-                    accessorKey: item?.toString(),
-                }))
-                : []),
-            ...(selectedColumn.length > 0
-                // ? Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map((columnName, itemIndex) =>
-
-                // (
-                //     {
-                //         header: `${String(columnName)}`,
-                //         id: `column_${String(columnName)}`,
-                //         accessorKey: `column_${String(columnName)}`,
-
-                //         aggregatedCell: (props: any) => {
-                //             const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
-                //                 const columnId = leafRow.original[selectedColumn[0]];
-                //                 const variance = leafRow.original[selectedValue[0]];
-                //                 const checkValue = isNaN(props.row.leafRows[0].original[selectedValue[0]])
-                //                 if (checkValue) {
-                //                     const count = variance ? 1 : 0
-                //                     return `column_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
-                //                 } else {
-                //                     return `column_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
-                //                 }
-                //             }, 0) ?? 0;
-                //             return
-                //             // return <div>{sumOfVariance}</div>
-                //         },
-                //         cell: (props: any) => {
-                //             const varianceValues = props.row.original[selectedColumn[0]];
-                //             const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
-                //             return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
-                //         },
-                //     }))
-                // : [])
-                ? selectedColumn.map(i =>
-                    data.map(item => item[i])
-                        .map(columnName => (
-                            {
-                                header: `${String(columnName)}`,
-                                id: `column_${String(columnName)}`,
-                                accessorKey: `column_${String(columnName)}`,
-
-                            }
-                        ))
-
-                )
-                : [])
-
-        ];
-    }, [data, selectedRow, selectedColumn, selectedValue])
+    const arrayOfNested: any[] = generateNestedColumns(arrayOfSelected, testMultiLayer);
+    console.log(generateNestedColumns(arrayOfSelected, data ));
 
     //#endregion
     const table = useReactTable({
@@ -193,8 +184,8 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
     };
 
     const handleColumn = (item: { name: string }) => {
-        setSelectedColumnDrop([item.name]);
-        setSelectedColumn([item.name]);
+        setSelectedColumnDrop([...selectedColumnDrop, item.name]);
+        setSelectedColumn([...selectedColumn, item.name]);
     };
 
     const handleValue = (item: { name: string }) => {
@@ -311,7 +302,6 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
             </div>
         </>
     );
-};
+}
 
-export default CustomizeDynamicTable;
-
+export default MultiLayeredColumn
