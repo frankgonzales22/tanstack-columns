@@ -14,8 +14,8 @@ interface NestedColumn {
     id: string;
     accessorKey: string;
     columns?: NestedColumn[];
-  }
-  
+}
+
 
 const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
@@ -25,15 +25,11 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const [expanded, setExpand] = useState<ExpandedState>({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
 
-    // data.map((item) => item[selectedColumn[0]]).map((columnName, itemIndex) => console.log(``))
     useEffect(() => {
         // setGrouping([...selectedRow])
         setGrouping(selectedRow)
     }, [selectedRow])
 
-
-
-    // console.log(generateNestedArrays(dynamicArray, 0))
     const dynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
@@ -54,8 +50,9 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                         aggregatedCell: (props: any) => {
                             const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
                                 const columnId = leafRow.original[selectedColumn[0]];
-                                const variance = leafRow.original[selectedValue[0]];
+                                const variance = leafRow.original[selectedValue[itemIndex]];
                                 const checkValue = isNaN(props.row.leafRows[0].original[selectedValue[0]])
+               
                                 if (checkValue) {
                                     const count = variance ? 1 : 0
                                     return `column_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
@@ -63,7 +60,8 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                     return `column_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
                                 }
                             }, 0) ?? 0;
-                            return
+                 
+                            // return console.log(variance)
                             // return <div>{sumOfVariance}</div>
                         },
                         cell: (props: any) => {
@@ -103,19 +101,19 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         ];
     }, [data, selectedRow, selectedColumn, selectedValue])
 
-   
 
 
-    const arrayOfSelected = [ 'yrSale', 'yearNMonthSale', 'territoryCode'];
+
+    const arrayOfSelected = ['yrSale', 'category'];
     const testMultiLayer = [
-        { name: 'frank', age: 23, status : 'blank' },
-        { name: 'cyrel', age: 23, status : 'blank'},
-        { name: 'cyrel', age: 25, status : 'blank'},
-        { name: 'baldwin', age: 24, status : 'not blank'},
-        { name: 'frank', age: 24,status : 'not blank' },
-        { name: 'baldwin', age: 22, status : 'not blank'},
-        { name: 'frank', age: 22, status : 'not blank'},
-        { name: 'baldwin', age: 21,status : 'not blank' }
+        { name: 'frank', age: 23, status: 'blank' },
+        { name: 'cyrel', age: 23, status: 'blank' },
+        { name: 'cyrel', age: 25, status: 'blank' },
+        { name: 'baldwin', age: 24, status: 'not blank' },
+        { name: 'frank', age: 24, status: 'not blank' },
+        { name: 'baldwin', age: 22, status: 'not blank' },
+        { name: 'frank', age: 22, status: 'not blank' },
+        { name: 'baldwin', age: 21, status: 'not blank' }
     ];
 
 
@@ -127,38 +125,70 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
             const uniqueValues: Set<any> = new Set(testMultiLayer.map((item) => item[columnName]));
             uniqueValuesMap.set(columnName, uniqueValues);
         });
-    
+
         // Get the name of the first item in arrayOfSelected as the parent name
         const parentName = arrayOfSelected[0];
-    
+
         // Generate nested columns hierarchy based on unique values
         const generateColumnsForItem = (index: number, parentName: string): NestedColumn[] => {
             const columnName = arrayOfSelected[index];
             const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
-    
-            const columns: NestedColumn[] = uniqueValues.map(value => ({
+
+            const columns: any[] = uniqueValues.map(value => ({
                 header: String(value),
                 id: index === 0 ? String(value) : `${parentName}_${value}`,
+                aggregatedCell : (props : any) => {
+                    const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
+                        const columnId = leafRow.original[selectedColumn[index]];
+                        const variance = leafRow.original[selectedValue[0]];
+                        const checkValue = isNaN(props.row.leafRows[index].original[selectedValue[index]])
+                        
+                        // if (checkValue) {
+                        //     const count = variance ? 1 : 0
+                        //     return `${parentName}_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
+                        // } else {
+                            return `${parentName}_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
+                        // }
+                    }, 0) ?? 0;
+                    // return console.log('theeeeeit',props)
+                    return <div>{sumOfVariance}</div>
+                 },
                 accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
-            }));
-    
+            }))
+
             // If there are more levels to generate, recursively generate columns for the next level
             if (index < arrayOfSelected.length - 1) {
                 columns.forEach(column => {
                     column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
                 });
             }
+            
             return columns;
+            
         };
         // Initialize generation with the first item in arrayOfSelected
         return generateColumnsForItem(0, parentName);
     };
-    const arrayOfNested: any[] = generateNestedColumns(arrayOfSelected, testMultiLayer);
-    console.log(generateNestedColumns(arrayOfSelected, data ));
+
+    const ultraDynamicColumns: any[] = useMemo(() => {
+        return [
+            ...(selectedRow[0] !== '' && selectedRow.length > 0
+                ? selectedRow.map((item) => ({
+                    header: item?.toString(),
+                    accessorKey: item?.toString(),
+              
+                }))
+                : []),
+            ...(selectedColumn.length > 0
+                ? generateNestedColumns(selectedColumn, data)
+                : [])
+        ];
+    }, [data, selectedRow, selectedColumn, selectedValue])
+
 
     //#endregion
     const table = useReactTable({
-        columns: dynamicColumns,
+        columns: ultraDynamicColumns,
         data,
         state: {
             columnOrder,
@@ -173,6 +203,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         getGroupedRowModel: getGroupedRowModel(),
         getSortedRowModel: getSortedRowModel(),
     })
+
 
     const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
     const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);

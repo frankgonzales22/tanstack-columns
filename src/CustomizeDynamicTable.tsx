@@ -34,9 +34,8 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         ];
     };
 
-    
-    const dynamicArray = ['ay', 'a2', 'a3']
-    console.log('ngek ngok', generateNestedArrays(dynamicArray, 0))
+
+  
     const dynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
@@ -57,6 +56,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                                 const columnId = leafRow.original[selectedColumn[0]];
                                 const variance = leafRow.original[selectedValue[0]];
                                 const checkValue = isNaN(props.row.leafRows[0].original[selectedValue[0]])
+                                console.log('col', columnId)
                                 if (checkValue) {
                                     const count = variance ? 1 : 0
                                     return `column_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
@@ -99,7 +99,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
         // dynamicArray.reverse().map(i => console.log('item reverse :', i))
         // data.map((item) => item[selectedColumn[0]])
         //     .map(columnName => console.log('colname', columnName))
-        Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map(columnName => console.log('nsd', columnName))
+        // Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map(columnName => console.log('nsd', columnName))
 
         selectedColumn.length > 0 ?
             selectedColumn.map((i, index) =>
