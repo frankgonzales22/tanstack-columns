@@ -219,25 +219,46 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                 }}
                                             >
                                                 {cell.getIsGrouped() ? (
+
                                                     // If it's a grouped cell, add an expander and row count
                                                     <>
+
+                                                        {cell.column.id !== (grouping[grouping.length - 1]) ?
+                                                            <button
+                                                                {...{
+                                                                    // onClick: row.getToggleExpandedHandler(),
+                                                                    onClick: row.getToggleExpandedHandler(),
+                                                                    style: {
+                                                                        cursor: row.getCanExpand()
+                                                                            ? 'pointer'
+                                                                            : 'normal',
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {row.getIsExpanded() ? '👇' : '👉'}{' '}
+                                                                {flexRender(
+                                                                    cell.column.columnDef.cell,
+                                                                    cell.getContext()
+                                                                )}{' '}
+                                                                {/* ({row.subRows.length}) */}
+                                                            </button>
+                                                        :
                                                         <button
                                                             {...{
-                                                                onClick: row.getToggleExpandedHandler(),
-                                                                style: {
-                                                                    cursor: row.getCanExpand()
-                                                                        ? 'pointer'
-                                                                        : 'normal',
-                                                                },
+                                                                // onClick: row.getToggleExpandedHandler(),
+                                                            
+                                                             
                                                             }}
                                                         >
-                                                            {row.getIsExpanded() ? '👇' : '👉'}{' '}
+                                                         
                                                             {flexRender(
                                                                 cell.column.columnDef.cell,
                                                                 cell.getContext()
                                                             )}{' '}
                                                             {/* ({row.subRows.length}) */}
                                                         </button>
+                                                        }
+
                                                     </>
                                                 ) : cell.getIsAggregated() ? (
                                                     // If the cell is aggregated, use the Aggregated
