@@ -63,44 +63,19 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
             const columnName = arrayOfSelected[index];
             const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
 
-            const columns: any[] = uniqueValues.map((value, valuesIndex) => ({
+            const columns: any[] = uniqueValues.map((value) => ({
                 header: String(value),
-                id: index === 0 ? String(value) : `${value}`,
+                id: index === 0 ? String(value) : `${parentName}_${value}`,
                 aggregatedCell: (props: any) => {
-                    const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
-                        // console.log(selectedColumn[0])
-                        const columnId = leafRow.original[selectedColumn[1]];
-                        const variance = leafRow.original[selectedValue[0]];
-                        const checkValue = isNaN(props.row.leafRows[index].original[selectedValue[0]]) //check if number
-                   
-                        
-                            // return props.row?.leafRows?.map((i : any )=> (
-                            //     `${i.original[selectedColumn[0]]}_${i.original[selectedColumn[1]]}` === props.column.columnDef.accessorKey
-                            
-                            //     ? i.original[selectedValue[0]]  : 0
 
-                            // ))
-                            
-                            const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
-                                const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_');
-                                if (dynamicColumnKey === props.column.columnDef.accessorKey) {
-                                    return totalSum + (row.original[selectedValue[0]] || 0); // Adding the value if it exists, otherwise adding 0
-                                }
-                                return totalSum;
-                            }, 0);
-                            return sum1 || 0; // Returning the sum or 0 if no sum is calculated
-                        if (checkValue) {
-                            console.log(variance)
-                            const count = variance ? 1 : 0
-                            return `${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
-                        } else {
-                            return `${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
+                    const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
+                        const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_');
+                        if (dynamicColumnKey === props.column.columnDef.accessorKey) {
+                            return totalSum + (row.original[selectedValue[0]] || 0); // Adding the value if it exists, otherwise adding 0
                         }
-                        console.log(variance)
-                        return `${variance} + ${props.column.id}`
-                    }, 0) ?? 0;
-                    // return console.log('ow no',sumOfVariance)
-                    return <div>{JSON.stringify(sumOfVariance)}</div>
+                        return totalSum;
+                    }, 0);
+                    return sum1 || 0; // Returning the sum or 0 if no sum is calculated
                 },
                 accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
             }))
@@ -161,7 +136,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const handleRow = (item: { name: string }) => {
         setSelectedRowDrop([...selectedRowDrop, item.name]);
         setSelectedRow([...selectedRow, item.name])
-      
+
     };
 
     const handleColumn = (item: { name: string }) => {
@@ -184,12 +159,12 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setSelectedValue([])
     }
 
-  
+
 
     useEffect(() => {
-      setColumnOrder([...selectedRowDrop,...columnOrder])
+        setColumnOrder([...selectedRowDrop, ...columnOrder])
     }, [selectedRow])
-    
+
     return (
         <>
 
