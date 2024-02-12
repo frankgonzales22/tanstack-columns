@@ -164,7 +164,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     {/* <DynamicTableTry /> */}
     {/* <InputOTPPage /> */}
     <DndProvider backend={HTML5Backend}>
-      <CustomizeDynamicTable data={newsale } />
+      {/* <CustomizeDynamicTable data={newsale } /> */}
       <MultiLayeredColumn data={newsale} />
       {/* <TryExpand data={yourData}/> */}
       {/* <FinalDrop /> */}

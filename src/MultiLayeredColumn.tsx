@@ -30,77 +30,6 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setGrouping(selectedRow)
     }, [selectedRow])
 
-    const dynamicColumns: any[] = useMemo(() => {
-        return [
-            ...(selectedRow[0] !== '' && selectedRow.length > 0
-                ? selectedRow.map((item) => ({
-                    header: item?.toString(),
-                    accessorKey: item?.toString(),
-                }))
-                : []),
-            ...(selectedColumn.length > 0
-                ? Array.from(new Set(data.map((item) => item[selectedColumn[0]]))).map((columnName, itemIndex) =>
-
-                (
-                    {
-                        header: `${String(columnName)}`,
-                        id: `column_${String(columnName)}`,
-                        accessorKey: `column_${String(columnName)}`,
-
-                        aggregatedCell: (props: any) => {
-                            const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
-                                const columnId = leafRow.original[selectedColumn[0]];
-                                const variance = leafRow.original[selectedValue[itemIndex]];
-                                const checkValue = isNaN(props.row.leafRows[0].original[selectedValue[0]])
-               
-                                if (checkValue) {
-                                    const count = variance ? 1 : 0
-                                    return `column_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
-                                } else {
-                                    return `column_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
-                                }
-                            }, 0) ?? 0;
-                 
-                            // return console.log(variance)
-                            // return <div>{sumOfVariance}</div>
-                        },
-                        cell: (props: any) => {
-                            const varianceValues = props.row.original[selectedColumn[0]];
-                            const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
-                            return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
-                        },
-                        columns: [
-                            {
-                                header: `${String(columnName)}_1`,
-                                id: `column_${String(columnName)}_1`,
-                                accessorKey: `column_${String(columnName)}_1`,
-
-                                cell: (props: any) => {
-                                    const varianceValues = props.row.original[selectedColumn[0]];
-                                    const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
-
-                                    // return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
-                                    return <div>{props.cell.id}</div>
-                                },
-                            },
-                            {
-                                header: `${String(columnName)}`,
-                                id: `column_${String(columnName)}`,
-                                accessorKey: `column_${String(columnName)}`,
-                                cell: (props: any) => {
-                                    const varianceValues = props.row.original[selectedColumn[0]];
-                                    const value = parseFloat(props.row.original[selectedValue[0]]).toFixed(2)
-
-                                    // return <div>{`column_${varianceValues}` === props.column.id ? value : ''}</div>
-                                    return <div>{props.cell.id}</div>
-                                },
-                            }
-                        ]
-                    }))
-                : [])
-        ];
-    }, [data, selectedRow, selectedColumn, selectedValue])
-
 
 
 
@@ -134,25 +63,45 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
             const columnName = arrayOfSelected[index];
             const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
 
-            const columns: any[] = uniqueValues.map(value => ({
+            const columns: any[] = uniqueValues.map((value, valuesIndex) => ({
                 header: String(value),
-                id: index === 0 ? String(value) : `${parentName}_${value}`,
-                aggregatedCell : (props : any) => {
+                id: index === 0 ? String(value) : `${value}`,
+                aggregatedCell: (props: any) => {
                     const sumOfVariance = props.row?.leafRows?.reduce((sum: any, leafRow: any) => {
-                        const columnId = leafRow.original[selectedColumn[index]];
+                        // console.log(selectedColumn[0])
+                        const columnId = leafRow.original[selectedColumn[1]];
                         const variance = leafRow.original[selectedValue[0]];
-                        const checkValue = isNaN(props.row.leafRows[index].original[selectedValue[index]])
+                        const checkValue = isNaN(props.row.leafRows[index].original[selectedValue[0]]) //check if number
+                   
                         
-                        // if (checkValue) {
-                        //     const count = variance ? 1 : 0
-                        //     return `${parentName}_${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
-                        // } else {
-                            return `${parentName}_${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
-                        // }
+                            // return props.row?.leafRows?.map((i : any )=> (
+                            //     `${i.original[selectedColumn[0]]}_${i.original[selectedColumn[1]]}` === props.column.columnDef.accessorKey
+                            
+                            //     ? i.original[selectedValue[0]]  : 0
+
+                            // ))
+                            
+                            const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
+                                const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_');
+                                if (dynamicColumnKey === props.column.columnDef.accessorKey) {
+                                    return totalSum + (row.original[selectedValue[0]] || 0); // Adding the value if it exists, otherwise adding 0
+                                }
+                                return totalSum;
+                            }, 0);
+                            return sum1 || 0; // Returning the sum or 0 if no sum is calculated
+                        if (checkValue) {
+                            console.log(variance)
+                            const count = variance ? 1 : 0
+                            return `${columnId}` === props.column.id ? sum + (count ?? 0) : sum;
+                        } else {
+                            return `${columnId}` === props.column.id ? sum + (variance ?? 0) : sum;
+                        }
+                        console.log(variance)
+                        return `${variance} + ${props.column.id}`
                     }, 0) ?? 0;
-                    // return console.log('theeeeeit',props)
-                    return <div>{sumOfVariance}</div>
-                 },
+                    // return console.log('ow no',sumOfVariance)
+                    return <div>{JSON.stringify(sumOfVariance)}</div>
+                },
                 accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
             }))
 
@@ -162,9 +111,9 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                     column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
                 });
             }
-            
+
             return columns;
-            
+
         };
         // Initialize generation with the first item in arrayOfSelected
         return generateColumnsForItem(0, parentName);
@@ -176,7 +125,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 ? selectedRow.map((item) => ({
                     header: item?.toString(),
                     accessorKey: item?.toString(),
-              
+
                 }))
                 : []),
             ...(selectedColumn.length > 0
@@ -212,6 +161,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const handleRow = (item: { name: string }) => {
         setSelectedRowDrop([...selectedRowDrop, item.name]);
         setSelectedRow([...selectedRow, item.name])
+      
     };
 
     const handleColumn = (item: { name: string }) => {
@@ -233,6 +183,13 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setSelectedValueDrop([])
         setSelectedValue([])
     }
+
+  
+
+    useEffect(() => {
+      setColumnOrder([...selectedRowDrop,...columnOrder])
+    }, [selectedRow])
+    
     return (
         <>
 
