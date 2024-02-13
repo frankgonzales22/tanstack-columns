@@ -25,25 +25,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     const [expanded, setExpand] = useState<ExpandedState>({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
 
-    useEffect(() => {
-        // setGrouping([...selectedRow])
-        setGrouping(selectedRow)
-    }, [selectedRow])
 
-
-
-
-    const arrayOfSelected = ['yrSale', 'category'];
-    const testMultiLayer = [
-        { name: 'frank', age: 23, status: 'blank' },
-        { name: 'cyrel', age: 23, status: 'blank' },
-        { name: 'cyrel', age: 25, status: 'blank' },
-        { name: 'baldwin', age: 24, status: 'not blank' },
-        { name: 'frank', age: 24, status: 'not blank' },
-        { name: 'baldwin', age: 22, status: 'not blank' },
-        { name: 'frank', age: 22, status: 'not blank' },
-        { name: 'baldwin', age: 21, status: 'not blank' }
-    ];
 
 
     //#region  TRY MULTIPLE LAYERED COLUMNS
@@ -54,7 +36,6 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
             const uniqueValues: Set<any> = new Set(testMultiLayer.map((item) => item[columnName]));
             uniqueValuesMap.set(columnName, uniqueValues);
         });
-
         // Get the name of the first item in arrayOfSelected as the parent name
         const parentName = arrayOfSelected[0];
 
@@ -62,7 +43,6 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         const generateColumnsForItem = (index: number, parentName: string): NestedColumn[] => {
             const columnName = arrayOfSelected[index];
             const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
-
             const columns: any[] = uniqueValues.map((value) => ({
                 header: String(value),
                 id: index === 0 ? String(value) : `${parentName}_${value}`,
@@ -79,28 +59,23 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 },
                 accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
             }))
-
             // If there are more levels to generate, recursively generate columns for the next level
             if (index < arrayOfSelected.length - 1) {
                 columns.forEach(column => {
                     column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
                 });
             }
-
             return columns;
-
         };
         // Initialize generation with the first item in arrayOfSelected
         return generateColumnsForItem(0, parentName);
     };
-
     const ultraDynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
                 ? selectedRow.map((item) => ({
                     header: item?.toString(),
                     accessorKey: item?.toString(),
-
                 }))
                 : []),
             ...(selectedColumn.length > 0
@@ -108,7 +83,6 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 : [])
         ];
     }, [data, selectedRow, selectedColumn, selectedValue])
-
 
     //#endregion
     const table = useReactTable({
@@ -128,27 +102,26 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         getSortedRowModel: getSortedRowModel(),
     })
 
-
     const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
     const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
     const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
 
     const handleRow = (item: { name: string }) => {
-        setSelectedRowDrop([...selectedRowDrop, item.name]);
-        setSelectedRow([...selectedRow, item.name])
-
-    };
-
+        if (!selectedRow.includes(item.name)) {
+            // If it doesn't exist, add it to selectedRow
+            setSelectedRowDrop([...selectedRowDrop, item.name]);
+            setSelectedRow([...selectedRow, item.name]);
+        }
+    }
     const handleColumn = (item: { name: string }) => {
         setSelectedColumnDrop([...selectedColumnDrop, item.name]);
         setSelectedColumn([...selectedColumn, item.name]);
-    };
+    }
 
     const handleValue = (item: { name: string }) => {
         setSelectedValueDrop([item.name]);
         setSelectedValue([item.name]);
-    };
-
+    }
 
     const handleClear = () => {
         setSelectedRowDrop([])
@@ -159,16 +132,12 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setSelectedValue([])
     }
 
-
-
     useEffect(() => {
+        setGrouping(selectedRow)
         setColumnOrder([...selectedRowDrop, ...columnOrder])
     }, [selectedRow])
-
     return (
         <>
-
-
             <HStack>
                 <Button _hover={{ cursor: 'pointer' }} onClick={handleClear}>Clear</Button>
                 <Box border={'1px solid black'} w={300}>
@@ -178,9 +147,9 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                     </ul>
                 </Box>
                 <Box height={'400px'}>
-                    <DroppableArea onDrop={handleRow} title='ROW' droppedItem={selectedRowDrop} />
-                    <DroppableArea onDrop={handleColumn} title='COLUMNS' droppedItem={selectedColumnDrop} />
-                    <DroppableArea onDrop={handleValue} title='VALUES' droppedItem={selectedValueDrop} />
+                    <DroppableArea  onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} />
+                    <DroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} />
+                    <DroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} />
                 </Box>
             </HStack>
             <div style={{ height: '100%', overflow: 'auto' }}>
@@ -245,9 +214,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                         :
                                                         <button
                                                             {...{
-                                                                // onClick: row.getToggleExpandedHandler(),
-                                                            
-                                                             
+                                                                // onClick: row.getToggleExpandedHandler(),                                                   
                                                             }}
                                                         >
                                                          

@@ -10,12 +10,12 @@ interface DynamicDataProps {
 }
 
 const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
-    const [selectedValue, setSelectedValue] = useState<any[]>([]);
-    const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
-    const [selectedRow, setSelectedRow] = useState<any[]>([]);
-    const [grouping, setGrouping] = useState<GroupingState>([]);
-    const [expanded, setExpand] = useState<ExpandedState>({});
-    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+    const [selectedValue, setSelectedValue] = useState<any[]>([])
+    const [selectedColumn, setSelectedColumn] = useState<any[]>([])
+    const [selectedRow, setSelectedRow] = useState<any[]>([])
+    const [grouping, setGrouping] = useState<GroupingState>([])
+    const [expanded, setExpand] = useState<ExpandedState>({})
+    const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([])
 
     // data.map((item) => item[selectedColumn[0]]).map((columnName, itemIndex) => console.log(``))
     useEffect(() => {
@@ -224,9 +224,9 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
                     </ul>
                 </Box>
                 <Box height={'400px'}>
-                    <DroppableArea onDrop={handleRow} title='ROW' droppedItem={selectedRowDrop} />
-                    <DroppableArea onDrop={handleColumn} title='COLUMNS' droppedItem={selectedColumnDrop} />
-                    <DroppableArea onDrop={handleValue} title='VALUES' droppedItem={selectedValueDrop} />
+                    <DroppableArea onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} />
+                    <DroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} />
+                    <DroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} />
                 </Box>
             </HStack>
             <div style={{ height: '100%', overflow: 'auto' }}>
@@ -311,7 +311,7 @@ const CustomizeDynamicTable = ({ data }: DynamicDataProps) => {
             </div>
         </>
     );
-};
+}
 
 export default CustomizeDynamicTable;
 

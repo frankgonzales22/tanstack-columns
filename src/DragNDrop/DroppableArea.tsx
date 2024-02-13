@@ -5,10 +5,10 @@ import { useDrop } from 'react-dnd';
 interface DroppableAreaProps {
   onDrop: (item: { name: string }) => void;
   title : string
-  droppedItem : string[]
+  droppedItems : string[]
 }
 
-const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedItem }) => {
+const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedItems}) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'item',
     drop: (item: { name: string }) => onDrop(item),
@@ -27,7 +27,7 @@ const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedIte
       }}
     >
       {title}
-      <h4>{droppedItem.join(' ')}</h4>
+      <h4>{droppedItems.join(' ')}</h4>
     </div>
   );
 };

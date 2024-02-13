@@ -4,13 +4,15 @@ import ReactDOM from 'react-dom/client'
 import summaryCompData from './datas/new_sales_data.ts'
 import summaryCompData1 from './datas/summaryComp.ts'
 import AntTable from './AntTable.tsx'
-import FinalDrop from './DragNDrop/FinalDrop.tsx'
+// import FinalDrop from './DragNDrop/FinalDrop.tsx'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import TryExpand from './DragNDrop/TryExpand.tsx'
-import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
+// import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
 import { newsales } from './datas/newsales.ts'
 import MultiLayeredColumn from './MultiLayeredColumn.tsx'
+import Rearrange from './DragNDrop/Rearrange.tsx'
+import RearrangeableArray from './RearrangeableArray.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -168,9 +170,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <MultiLayeredColumn data={newsale} />
       {/* <TryExpand data={yourData}/> */}
       {/* <FinalDrop /> */}
-
+      {/* <RearrangeableArray /> */}
     </DndProvider>
-
+    {/* <Rearrange /> */}
     {/* <AntTable />   */}
   </>,
 )
