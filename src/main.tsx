@@ -13,6 +13,11 @@ import { newsales } from './datas/newsales.ts'
 import MultiLayeredColumn from './MultiLayeredColumn.tsx'
 import Rearrange from './DragNDrop/Rearrange.tsx'
 import RearrangeableArray from './RearrangeableArray.tsx'
+import ParentComponent from './RearrangeDrop/ParentComponent.tsx'
+import { useState } from 'react'
+import RenderDraggableItem from './RenderDraggableItem.tsx'
+import ParentProp from './PassProps/ParentProp.tsx'
+import AReact from './AReactDnd/AReact.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -31,117 +36,11 @@ const yourData = [
   { category: 'C', value: 330, date: '2023-01-03' },
 ];
 
-const data = summaryCompData
+// const data = summaryCompData
 
-const quota = summaryCompData1
+// const quota = summaryCompData1
 // console.log(quota)
 const newsale = newsales
-
-
-const item = [
-  {
-    header: 'frank', id: 'column_frank', accessorKey: 'column_frank',
-    columns: [
-      [
-        {
-          header: 23,
-          id: "column_frank_column_23",
-          accessorKey: "column_frank_column_23"
-        },
-        {
-          header: 25,
-          id: "column_frank_column_25",
-          accessorKey: "column_frank_column_25"
-        },
-        {
-          header: 24,
-          id: "column_frank_column_24",
-          accessorKey: "column_frank_column_24"
-        },
-        {
-          header: 22,
-          id: "column_frank_column_22",
-          accessorKey: "column_frank_column_22"
-        },
-        {
-          header: 21,
-          id: "column_frank_column_21",
-          accessorKey: "column_frank_column_21"
-        },
-      ]
-    ]
-  },
-  {
-    header: 'baldwin', id: 'column_baldwin', accessorKey: 'column_baldwin',
-    columns: [
-      [
-        {
-          header: 23,
-          id: "column_baldwin_column_23",
-          accessorKey: "column_baldwin_column_23"
-        },
-        {
-          header: 25,
-          id: "column_baldwin_column_25",
-          accessorKey: "column_baldwin_column_25"
-        },
-        {
-          header: 24,
-          id: "column_baldwin_column_24",
-          accessorKey: "column_baldwin_column_24"
-        },
-        {
-          header: 22,
-          id: "column_baldwin_column_22",
-          accessorKey: "column_baldwin_column_22"
-        },
-        {
-          header: 21,
-          id: "column_baldwin_column_21",
-          accessorKey: "column_baldwin_column_21"
-        },
-      ]
-    ]
-  },
-  {
-    header: 'cyrel', id: 'column_cyrel', accessorKey: 'column_cyrel',
-    columns: [
-      [
-        {
-          header: 23,
-          id: "column_cyrel_column_23",
-          accessorKey: "column_cyrel_column_23"
-        },
-        {
-          header: 25,
-          id: "column_cyrel_column_25",
-          accessorKey: "column_cyrel_column_25"
-        },
-        {
-          header: 24,
-          id: "column_cyrel_column_24",
-          accessorKey: "column_cyrel_column_24"
-        },
-        {
-          header: 22,
-          id: "column_cyrel_column_22",
-          accessorKey: "column_cyrel_column_22"
-        },
-        {
-          header: 21,
-          id: "column_cyrel_column_21",
-          accessorKey: "column_cyrel_column_21"
-        },
-      ]
-    ]
-  },
-
-
-]
-
-
-
-
 
 // console.log(newsale)
 const modifiedItems: any[] = newsale.map((item) => ({
@@ -151,16 +50,8 @@ const modifiedItems: any[] = newsale.map((item) => ({
   ns_Total: item.ns_Total,
 }));
 // console.log(modifiedItems)
-const testMultiLayer = [
-  { name: 'frank', age: 23 },
-  { name: 'cyrel', age: 23 },
-  { name: 'cyrel', age: 25 },
-  { name: 'baldwin', age: 24 },
-  { name: 'frank', age: 24 },
-  { name: 'baldwin', age: 22 },
-  { name: 'frank', age: 22 },
-  { name: 'baldwin', age: 21 }
-]
+
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
     {/* <DynamicTableTry /> */}
@@ -170,9 +61,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <MultiLayeredColumn data={newsale} />
       {/* <TryExpand data={yourData}/> */}
       {/* <FinalDrop /> */}
-      {/* <RearrangeableArray /> */}
+      {/* <RearrangeableArray items={items} setItems={setItems}/> */}
+      {/* <RenderDraggableItem /> */}
+      {/* <ParentComponent /> */}
+      {/* <AReact /> */}
     </DndProvider>
     {/* <Rearrange /> */}
     {/* <AntTable />   */}
+    {/* <ParentProp /> */}
+    {/* <Main /> */}
   </>,
 )

@@ -18,15 +18,13 @@ interface NestedColumn {
 
 
 const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
+
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
     const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any[]>([]);
     const [grouping, setGrouping] = useState<GroupingState>([]);
     const [expanded, setExpand] = useState<ExpandedState>({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
-
-
-
 
     //#region  TRY MULTIPLE LAYERED COLUMNS
     const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer: any[]): any[] => {
