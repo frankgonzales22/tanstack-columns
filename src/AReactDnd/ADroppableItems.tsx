@@ -6,7 +6,7 @@ interface DroppableAreaProps {
   onDrop: (item: { name: string }) => void;
   title: string
   droppedItems: string[]
-  setDroppedItems : (any : any) => void
+  setDroppedItems ?: (any : any) => void
 }
 interface DraggableItemProps {
   index: number;
@@ -22,7 +22,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) 
           isDragging: !!monitor.isDragging(),
       }),
   })
-  console.log("Dragging draggables:", name)
+  // console.log("Dragging draggables:", name)
 
   const [, drop] = useDrop({
       accept: 'row',
@@ -68,7 +68,9 @@ const ADroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedIt
     const newItems = [...droppedItems]
     newItems.splice(dragIndex, 1)
     newItems.splice(hoverIndex, 0, draggedItem)
+   if(setDroppedItems){
     setDroppedItems(newItems)
+   }
 }, [droppedItems])
 
 

@@ -17,7 +17,7 @@ const Item: React.FC<{ name: string }> = ({ name }) => {
     }));
 
     // Log the draggable item when it is being dragged
-    console.log("Dragging item:", name);
+    // console.log("Dragging item:", name);
 
     return (
         <div

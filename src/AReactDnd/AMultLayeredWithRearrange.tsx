@@ -1,6 +1,6 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
 import { ColumnOrderState, ExpandedState, GroupingState, flexRender, getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ADraggableItem from "./ADraggableItem";
 import ADroppableArea from "./ADroppableItems";
 
@@ -19,6 +19,9 @@ interface NestedColumn {
 
 
 const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
+    const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
+    const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
+    const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
 
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
     const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
@@ -101,9 +104,7 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
         getSortedRowModel: getSortedRowModel(),
     })
 
-    const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
-    const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
-    const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
+ 
 
     const handleRow = (item: { name: string }) => {
         if (!selectedRow.includes(item.name)) {
@@ -116,6 +117,11 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setSelectedColumnDrop([...selectedColumnDrop, item.name]);
         setSelectedColumn([...selectedColumn, item.name]);
     }
+    console.log('selected col', selectedColumn)
+    // const handleColumn = useCallback((item: { name: string }) => {
+    //     setSelectedColumnDrop(prevState => [...prevState, item.name]);
+    //     setSelectedColumn(prevState => [...prevState, item.name]);
+    // }, [selectedColumnDrop, setSelectedColumnDrop, setSelectedColumn]);
 
     const handleValue = (item: { name: string }) => {
         setSelectedValueDrop([item.name]);
@@ -135,6 +141,9 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setGrouping(selectedRowDrop)
         setColumnOrder([...selectedRowDrop, ...columnOrder])
     }, [selectedRow, selectedRowDrop])
+        useEffect(() => {
+            setSelectedColumn(selectedColumnDrop)
+        }, [selectedColumnDrop])
     return (
         <>
             <HStack>
@@ -146,9 +155,9 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
                     </ul>
                 </Box>
                 <Box height={'400px'}>
-                    <ADroppableArea  onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} setDroppedItems={setSelectedRowDrop} />
-                    {/* <ADroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} />
-                    <ADroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} /> */}
+                    <ADroppableArea onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} setDroppedItems={setSelectedRowDrop} />
+                    <ADroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} setDroppedItems={setSelectedColumnDrop} />
+                    <ADroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} />
                 </Box>
             </HStack>
             <div style={{ height: '100%', overflow: 'auto' }}>
@@ -208,19 +217,19 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                                 )}{' '}
                                                                 {/* ({row.subRows.length}) */}
                                                             </button>
-                                                        :
-                                                        <button
-                                                            {...{
-                                                                // onClick: row.getToggleExpandedHandler(),                                                   
-                                                            }}
-                                                        >
-                                                         
-                                                            {flexRender(
-                                                                cell.column.columnDef.cell,
-                                                                cell.getContext()
-                                                            )}{' '}
-                                                            {/* ({row.subRows.length}) */}
-                                                        </button>
+                                                            :
+                                                            <button
+                                                                {...{
+                                                                    // onClick: row.getToggleExpandedHandler(),                                                   
+                                                                }}
+                                                            >
+
+                                                                {flexRender(
+                                                                    cell.column.columnDef.cell,
+                                                                    cell.getContext()
+                                                                )}{' '}
+                                                                {/* ({row.subRows.length}) */}
+                                                            </button>
                                                         }
 
                                                     </>
