@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -11,7 +11,7 @@ const ItemTypes = {
 const Item: React.FC<{ name: string }> = ({ name }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: ItemTypes.ITEM,
-        item: { type: ItemTypes.ITEM, name },
+        item: { type: ItemTypes.ITEM, name, fromMainSource: true }, // Indicates if the item is from the main source
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
@@ -55,24 +55,26 @@ const MainSource: React.FC = () => {
 // Row component
 const Row: React.FC = () => {
     const [droppedItems, setDroppedItems] = useState<string[]>([]);
-    
+
+    const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
+        const draggedItem = droppedItems[dragIndex];
+        const newItems = [...droppedItems];
+        newItems.splice(dragIndex, 1);
+        newItems.splice(hoverIndex, 0, draggedItem);
+        setDroppedItems(newItems);
+    }, [droppedItems]);
+
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.ITEM,
-        drop: (item: { name: string }) => {
-            setDroppedItems([...droppedItems, item.name]);
+        drop: (item: { name: string, fromMainSource: boolean }) => {
+            if (item.fromMainSource) { // Only add the item if it's from the main source
+                setDroppedItems([...droppedItems, item.name]);
+            }
         },
         collect: (monitor) => ({
             isOver: !!monitor.isOver(),
         }),
     });
-
-    const moveItem = (dragIndex: number, hoverIndex: number) => {
-        const draggedItem = droppedItems[dragIndex]
-        const newItems = [...droppedItems]
-        newItems.splice(dragIndex, 1)
-        newItems.splice(hoverIndex, 0, draggedItem)
-        setDroppedItems(newItems);
-    }
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -104,31 +106,57 @@ const Row: React.FC = () => {
     )
 }
 
-// DraggableItem component within Row
-const DraggableItem: React.FC<{ index: number, name: string, moveItem: (dragIndex: number, hoverIndex: number) => void }> = ({ index, name, moveItem }) => {
+// DraggableItem component
+interface DraggableItemProps {
+    index: number;
+    name: string;
+    moveItem: (dragIndex: number, hoverIndex: number) => void;
+}
+
+const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) => {
+    const ref = useRef<HTMLDivElement>(null);
+
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.ITEM,
-        item: { index },
+        item: { type: ItemTypes.ITEM, index },
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
     });
 
+    console.log("Dragging draggables:", name);
+
+
     const [, drop] = useDrop({
         accept: ItemTypes.ITEM,
         hover: (item: { index: number }) => {
             const dragIndex = item.index;
-            if (dragIndex === index) {
+            const hoverIndex = index;
+
+            if (dragIndex === hoverIndex) {
                 return;
             }
-            moveItem(dragIndex, index);
-            item.index = index;
+
+            moveItem(dragIndex, hoverIndex);
+            item.index = hoverIndex;
         },
     });
 
+    drag(drop(ref));
+
     return (
-        <div ref={(node) => drag(drop(node))} style={{ opacity: isDragging ? 0.5 : 1 }}>
-            <Item name={name} />
+        <div
+            ref={ref}
+            style={{
+                opacity: isDragging ? 0.5 : 1,
+                cursor: 'move',
+                border: '1px solid black',
+                padding: '0.5rem',
+                margin: '0.5rem',
+                backgroundColor: 'lightgray',
+            }}
+        >
+            {name}
         </div>
     );
 };
@@ -140,8 +168,6 @@ const AReact: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <MainSource />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '2rem' }}>
                     <Row />
                 </div>
             </div>
