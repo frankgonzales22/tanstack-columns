@@ -117,7 +117,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) 
     const ref = useRef<HTMLDivElement>(null);
 
     const [{ isDragging }, drag] = useDrag({
-        type: ItemTypes.ITEM,
+        type: 'row',
         item: { type: ItemTypes.ITEM, index },
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
@@ -128,7 +128,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) 
 
 
     const [, drop] = useDrop({
-        accept: ItemTypes.ITEM,
+        accept: 'row',
         hover: (item: { index: number }) => {
             const dragIndex = item.index;
             const hoverIndex = index;

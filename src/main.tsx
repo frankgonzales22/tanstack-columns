@@ -1,25 +1,13 @@
 
 import ReactDOM from 'react-dom/client'
 
-import summaryCompData from './datas/new_sales_data.ts'
-import summaryCompData1 from './datas/summaryComp.ts'
-import AntTable from './AntTable.tsx'
 // import FinalDrop from './DragNDrop/FinalDrop.tsx'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import TryExpand from './DragNDrop/TryExpand.tsx'
 // import CustomizeDynamicTable from './CustomizeDynamicTable.tsx'
 import { newsales } from './datas/newsales.ts'
-import MultiLayeredColumn from './MultiLayeredColumn.tsx'
-import Rearrange from './DragNDrop/Rearrange.tsx'
-import RearrangeableArray from './RearrangeableArray.tsx'
-import ParentComponent from './RearrangeDrop/ParentComponent.tsx'
-import { useState } from 'react'
-import RenderDraggableItem from './RenderDraggableItem.tsx'
-import ParentProp from './PassProps/ParentProp.tsx'
 import AReact from './AReactDnd/AReact.tsx'
-import RearrangeAAAA from './AReactDnd/RearrangA.tsx'
-import { TryAgain } from './AReactDnd/TryAgain.tsx'
+import MultiLayeredColumn from './MultiLayeredColumn.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -56,23 +44,14 @@ const modifiedItems: any[] = newsale.map((item) => ({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
-    {/* <DynamicTableTry /> */}
-    {/* <InputOTPPage /> */}
+
     <DndProvider backend={HTML5Backend}>
-      {/* <CustomizeDynamicTable data={newsale } /> */}
+
       {/* <MultiLayeredColumn data={newsale} /> */}
-      {/* <TryExpand data={yourData}/> */}
-      {/* <FinalDrop /> */}
-      {/* <RearrangeableArray items={items} setItems={setItems}/> */}
-      {/* <RenderDraggableItem /> */}
-      {/* <ParentComponent /> */}
+ 
       <AReact />
-      {/* <RearrangeAAAA /> */}
+
     </DndProvider>
-    <Rearrange />
-    {/* <AntTable />   */}
-    {/* <ParentProp /> */}
-    {/* <Main /> */}
-    {/* <TryAgain /> */}
+
   </>,
 )
