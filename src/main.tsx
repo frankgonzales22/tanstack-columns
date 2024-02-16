@@ -8,6 +8,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { newsales } from './datas/newsales.ts'
 import AReact from './AReactDnd/AReact.tsx'
 import MultiLayeredColumn from './MultiLayeredColumn.tsx'
+import AMultiLayeredColumn from './AReactDnd/AMultLayeredWithRearrange.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -48,7 +49,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <DndProvider backend={HTML5Backend}>
 
       {/* <MultiLayeredColumn data={newsale} /> */}
- 
+      <AMultiLayeredColumn data={newsale} />
       <AReact />
 
     </DndProvider>

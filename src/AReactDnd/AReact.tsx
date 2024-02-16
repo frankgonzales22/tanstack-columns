@@ -6,7 +6,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 const ItemTypes = {
     ITEM: 'item',
 };
-
 // Item component
 const Item: React.FC<{ name: string }> = ({ name }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -36,7 +35,6 @@ const Item: React.FC<{ name: string }> = ({ name }) => {
         </div>
     )
 }
-
 // MainSource component
 const MainSource: React.FC = () => {
     const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8', 'Item 9', 'Item 10'];
@@ -49,35 +47,40 @@ const MainSource: React.FC = () => {
                 ))}
             </div>
         </div>
-    );
-};
-
+    )
+}
 // Row component
 const Row: React.FC = () => {
     const [droppedItems, setDroppedItems] = useState<string[]>([]);
 
     const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
-        const draggedItem = droppedItems[dragIndex];
-        const newItems = [...droppedItems];
-        newItems.splice(dragIndex, 1);
-        newItems.splice(hoverIndex, 0, draggedItem);
-        setDroppedItems(newItems);
-    }, [droppedItems]);
+        const draggedItem = droppedItems[dragIndex]
+        const newItems = [...droppedItems]
+        newItems.splice(dragIndex, 1)
+        newItems.splice(hoverIndex, 0, draggedItem)
+        setDroppedItems(newItems)
+    }, [droppedItems])
 
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.ITEM,
         drop: (item: { name: string, fromMainSource: boolean }) => {
-            if (item.fromMainSource) { // Only add the item if it's from the main source
-                setDroppedItems([...droppedItems, item.name]);
+            if (item.fromMainSource && !droppedItems.includes(item.name)) { // Check if the item doesn't already exist
+                setDroppedItems([...droppedItems, item.name])
             }
         },
         collect: (monitor) => ({
             isOver: !!monitor.isOver(),
         }),
-    });
-
+    })
+    console.log(droppedItems)
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}
+        >
             <div
                 ref={drop}
                 style={{
@@ -93,10 +96,21 @@ const Row: React.FC = () => {
             >
                 <h2>Row</h2>
                 {droppedItems.map((item, index) => (
-                    <DraggableItem key={index} index={index} name={item} moveItem={moveItem} />
+                    <DraggableItem
+                        key={index}
+                        index={index}
+                        name={item}
+                        moveItem={moveItem}
+                    />
                 ))}
             </div>
-            <div style={{ marginTop: '1rem', border: '1px solid black', padding: '1rem' }}>
+            <div
+                style={{
+                    marginTop: '1rem',
+                    border: '1px solid black',
+                    padding: '1rem'
+                }}
+                >
                 <h3>Row Display</h3>
                 {droppedItems.map((item, index) => (
                     <div key={index}>{item}</div>
@@ -105,45 +119,36 @@ const Row: React.FC = () => {
         </div>
     )
 }
-
 // DraggableItem component
 interface DraggableItemProps {
     index: number;
     name: string;
     moveItem: (dragIndex: number, hoverIndex: number) => void;
 }
-
 const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) => {
-    const ref = useRef<HTMLDivElement>(null);
-
+    const ref = useRef<HTMLDivElement>(null)
     const [{ isDragging }, drag] = useDrag({
         type: 'row',
         item: { type: ItemTypes.ITEM, index },
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
-    });
-
-    console.log("Dragging draggables:", name);
-
+    })
+    console.log("Dragging draggables:", name)
 
     const [, drop] = useDrop({
         accept: 'row',
-        hover: (item: { index: number }) => {
+        drop: (item: { index: number }) => {
             const dragIndex = item.index;
             const hoverIndex = index;
-
             if (dragIndex === hoverIndex) {
                 return;
             }
-
-            moveItem(dragIndex, hoverIndex);
+            moveItem(dragIndex, hoverIndex)
             item.index = hoverIndex;
         },
-    });
-
-    drag(drop(ref));
-
+    })
+    drag(drop(ref))
     return (
         <div
             ref={ref}
@@ -158,15 +163,19 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ index, name, moveItem }) 
         >
             {name}
         </div>
-    );
-};
-
+    )
+}
 // App component
 const AReact: React.FC = () => {
     return (
         <DndProvider backend={HTML5Backend}>
             <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                    }}>
                     <MainSource />
                     <Row />
                 </div>
