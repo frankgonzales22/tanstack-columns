@@ -17,6 +17,9 @@ const Item: React.FC<{ name: string }> = ({ name }) => {
         }),
     }));
 
+    // Log the draggable item when it is being dragged
+    console.log("Dragging item:", name);
+
     return (
         <div
             ref={drag}
@@ -31,8 +34,8 @@ const Item: React.FC<{ name: string }> = ({ name }) => {
         >
             {name}
         </div>
-    );
-};
+    )
+}
 
 // MainSource component
 const MainSource: React.FC = () => {
@@ -52,14 +55,7 @@ const MainSource: React.FC = () => {
 // Row component
 const Row: React.FC = () => {
     const [droppedItems, setDroppedItems] = useState<string[]>([]);
-    const moveItem = (dragIndex: any, hoverIndex: any) => {
-        const draggedItem = droppedItems[dragIndex]
-        const newItems = [...droppedItems]
-        newItems.splice(dragIndex, 1)
-        newItems.splice(hoverIndex, 0, draggedItem)
-        setDroppedItems(newItems);
-    }
-
+    
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.ITEM,
         drop: (item: { name: string }) => {
@@ -69,37 +65,15 @@ const Row: React.FC = () => {
             isOver: !!monitor.isOver(),
         }),
     });
-    const renderDraggableItem = (item: string, index: any) => {
-        const [, dragItem] = useDrag({
-            type: 'item',
-            item: { index },
-        })
 
-        const [, drop] = useDrop({
-            accept: 'item',
-            drop: (item: { index: any }, monitor) => {
-                const dragIndex = item.index;
-                const hoverIndex = index;
-                if (dragIndex === hoverIndex) {
-                    return;
-                }
-                moveItem(dragIndex, hoverIndex);
-                item.index = hoverIndex;
-            },
-        })
-
-        return (
-            <div ref={node => dragItem(drop(node))} key={index}
-                style={{
-                    padding: '8px', border:
-                        '1px solid #ccc', marginBottom:
-                        '4px', cursor:
-                        'move', backgroundColor: index % 2 === 0 ? 'lightblue' : '#ffffff'
-                }}>
-                {item}
-            </div>
-        )
+    const moveItem = (dragIndex: number, hoverIndex: number) => {
+        const draggedItem = droppedItems[dragIndex]
+        const newItems = [...droppedItems]
+        newItems.splice(dragIndex, 1)
+        newItems.splice(hoverIndex, 0, draggedItem)
+        setDroppedItems(newItems);
     }
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -117,7 +91,7 @@ const Row: React.FC = () => {
             >
                 <h2>Row</h2>
                 {droppedItems.map((item, index) => (
-                    <div key={index}>{item}</div>
+                    <DraggableItem key={index} index={index} name={item} moveItem={moveItem} />
                 ))}
             </div>
             <div style={{ marginTop: '1rem', border: '1px solid black', padding: '1rem' }}>
@@ -125,63 +99,50 @@ const Row: React.FC = () => {
                 {droppedItems.map((item, index) => (
                     <div key={index}>{item}</div>
                 ))}
-
             </div>
         </div>
     )
 }
 
-// Column component
-const Column: React.FC = () => {
-    const [droppedItems, setDroppedItems] = useState<string[]>([]);
-    const [{ isOver }, drop] = useDrop({
-        accept: ItemTypes.ITEM,
-        drop: (item: { name: string }) => {
-            setDroppedItems([...droppedItems, item.name]);
-        },
+// DraggableItem component within Row
+const DraggableItem: React.FC<{ index: number, name: string, moveItem: (dragIndex: number, hoverIndex: number) => void }> = ({ index, name, moveItem }) => {
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemTypes.ITEM,
+        item: { index },
         collect: (monitor) => ({
-            isOver: !!monitor.isOver()
-        })
-    })
+            isDragging: !!monitor.isDragging(),
+        }),
+    });
+
+    const [, drop] = useDrop({
+        accept: ItemTypes.ITEM,
+        hover: (item: { index: number }) => {
+            const dragIndex = item.index;
+            if (dragIndex === index) {
+                return;
+            }
+            moveItem(dragIndex, index);
+            item.index = index;
+        },
+    });
+
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div
-                ref={drop}
-                style={{
-                    width: '300px',
-                    height: '300px',
-                    border: '2px dashed gray',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: isOver ? 'lightgreen' : 'transparent',
-                }}
-            >
-                <h2>Column</h2>
-                {droppedItems.map((item, index) => (
-                    <div key={index}>{item}</div>
-                ))}
-            </div>
-            <div style={{ marginTop: '1rem', border: '1px solid black', padding: '1rem' }}>
-                <h3>Column Display</h3>
-                {droppedItems.map((item, index) => (
-                    <div key={index}>{item}</div>
-                ))}
-            </div>
+        <div ref={(node) => drag(drop(node))} style={{ opacity: isDragging ? 0.5 : 1 }}>
+            <Item name={name} />
         </div>
-    )
-}
+    );
+};
 
 // App component
 const AReact: React.FC = () => {
     return (
         <DndProvider backend={HTML5Backend}>
             <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem' }}>
-                <MainSource />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <MainSource />
+                </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '2rem' }}>
                     <Row />
-                    <Column />
                 </div>
             </div>
         </DndProvider>

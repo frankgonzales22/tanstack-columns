@@ -110,11 +110,11 @@ const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, title, droppedIte
             <h3>{title}</h3>
             {droppedItems.map((item, index) => renderDraggableItem(item, index))}
 
-            {/* <ul>
-                {droppedItems.map((item, index) => (
-                    <li key={index}>{item}</li>
-                ))}
-            </ul> */}
+              {/* <ul>
+                  {droppedItems.map((item, index) => (
+                      <li key={index}>{item}</li>
+                  ))}
+              </ul> */}
         </div>
     );
 };

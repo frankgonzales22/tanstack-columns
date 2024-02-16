@@ -31,7 +31,7 @@ const Box: React.FC<BoxProps> = ({ id, text, index, moveBox }) => {
 
   const [, drop] = useDrop({
     accept: ItemTypes.BOX,
-    hover: (item: DragItem, monitor: DropTargetMonitor) => {
+    drop: (item: DragItem, monitor: DropTargetMonitor) => {
       if (!ref.current) {
         return;
       }
@@ -58,7 +58,7 @@ const Box: React.FC<BoxProps> = ({ id, text, index, moveBox }) => {
       moveBox(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
-  });
+  })
 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.BOX,
@@ -66,7 +66,7 @@ const Box: React.FC<BoxProps> = ({ id, text, index, moveBox }) => {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  });
+  })
 
   drag(drop(ref));
 
@@ -76,7 +76,7 @@ const Box: React.FC<BoxProps> = ({ id, text, index, moveBox }) => {
     <div ref={ref} style={{ opacity }} className="box">
       {text}
     </div>
-  );
+  )
 };
 
 const Rearrange: React.FC = () => {
@@ -87,14 +87,13 @@ const Rearrange: React.FC = () => {
     { id: 4, text: 'Box 4', index: 3 },
   ]);
 
-  console.log('boxes', boxes)
   const moveBox = (dragIndex: number, hoverIndex: number) => {
     const dragBox = boxes[dragIndex];
     const newBoxes = [...boxes];
     newBoxes.splice(dragIndex, 1);
     newBoxes.splice(hoverIndex, 0, dragBox);
     setBoxes(newBoxes.map((box, index) => ({ ...box, index })));
-  };
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -104,7 +103,7 @@ const Rearrange: React.FC = () => {
         ))}
       </div>
     </DndProvider>
-  );
-};
+  )
+}
 
 export default Rearrange;

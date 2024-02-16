@@ -18,6 +18,8 @@ import { useState } from 'react'
 import RenderDraggableItem from './RenderDraggableItem.tsx'
 import ParentProp from './PassProps/ParentProp.tsx'
 import AReact from './AReactDnd/AReact.tsx'
+import RearrangeAAAA from './AReactDnd/RearrangA.tsx'
+import { TryAgain } from './AReactDnd/TryAgain.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -58,17 +60,19 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     {/* <InputOTPPage /> */}
     <DndProvider backend={HTML5Backend}>
       {/* <CustomizeDynamicTable data={newsale } /> */}
-      <MultiLayeredColumn data={newsale} />
+      {/* <MultiLayeredColumn data={newsale} /> */}
       {/* <TryExpand data={yourData}/> */}
       {/* <FinalDrop /> */}
       {/* <RearrangeableArray items={items} setItems={setItems}/> */}
       {/* <RenderDraggableItem /> */}
       {/* <ParentComponent /> */}
-      {/* <AReact /> */}
+      <AReact />
+      {/* <RearrangeAAAA /> */}
     </DndProvider>
-    {/* <Rearrange /> */}
+    <Rearrange />
     {/* <AntTable />   */}
     {/* <ParentProp /> */}
     {/* <Main /> */}
+    {/* <TryAgain /> */}
   </>,
 )
