@@ -1,10 +1,9 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
 import { ColumnOrderState, ExpandedState, GroupingState, flexRender, getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
-import DraggableItem from "./DragNDrop/DraggableItem";
-import DroppableArea from "./DragNDrop/DroppableArea";
-
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import ADraggableItem from "./ADraggableItem";
+import ADroppableArea from "./ADroppableItems";
+import { Table } from "antd";
 
 interface DynamicDataProps {
     data: any[];
@@ -16,8 +15,10 @@ interface NestedColumn {
     columns?: NestedColumn[];
 }
 
-const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
-
+const AMultiAndtD = ({ data }: DynamicDataProps) => {
+    const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
+    const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
+    const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
     const [selectedValue, setSelectedValue] = useState<any[]>([]);
     const [selectedColumn, setSelectedColumn] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any[]>([]);
@@ -30,9 +31,9 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         // Collect all unique values for each item in arrayOfSelected
         const uniqueValuesMap: Map<string, Set<any>> = new Map();
         arrayOfSelected.forEach((columnName) => {
-            const uniqueValues: Set<any> = new Set(testMultiLayer.map((item) => item[columnName]))
-            uniqueValuesMap.set(columnName, uniqueValues)
-        })
+            const uniqueValues: Set<any> = new Set(testMultiLayer.map((item) => item[columnName]));
+            uniqueValuesMap.set(columnName, uniqueValues);
+        });
         // Get the name of the first item in arrayOfSelected as the parent name
         const parentName = arrayOfSelected[0];
 
@@ -44,6 +45,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 header: String(value),
                 id: index === 0 ? String(value) : `${parentName}_${value}`,
                 aggregatedCell: (props: any) => {
+
                     const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
                         const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_');
                         if (dynamicColumnKey === props.column.columnDef.accessorKey) {
@@ -62,10 +64,10 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 });
             }
             return columns;
-        };
+        }
         // Initialize generation with the first item in arrayOfSelected
-        return generateColumnsForItem(0, parentName)
-    };
+        return generateColumnsForItem(0, parentName);
+    }
     const ultraDynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
@@ -77,7 +79,7 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
             ...(selectedColumn.length > 0
                 ? generateNestedColumns(selectedColumn, data)
                 : [])
-        ]
+        ];
     }, [data, selectedRow, selectedColumn, selectedValue])
 
     //#endregion
@@ -98,21 +100,19 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
         getSortedRowModel: getSortedRowModel(),
     })
 
-    const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([])
-    const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([])
-    const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([])
-
     const handleRow = (item: { name: string }) => {
         if (!selectedRow.includes(item.name)) {
             // If it doesn't exist, add it to selectedRow
-            setSelectedRowDrop([...selectedRowDrop, item.name])
-            setSelectedRow([...selectedRow, item.name])
+            setSelectedRowDrop([...selectedRowDrop, item.name]);
+            setSelectedRow([...selectedRow, item.name]);
         }
     }
     const handleColumn = (item: { name: string }) => {
-        setSelectedColumnDrop([...selectedColumnDrop, item.name])
-        setSelectedColumn([...selectedColumn, item.name])
+        setSelectedColumnDrop([...selectedColumnDrop, item.name]);
+        setSelectedColumn([...selectedColumn, item.name]);
     }
+    console.log('selected col', selectedColumn)
+
 
     const handleValue = (item: { name: string }) => {
         setSelectedValueDrop([item.name]);
@@ -129,9 +129,12 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     }
 
     useEffect(() => {
-        setGrouping(selectedRow)
+        setGrouping(selectedRowDrop)
         setColumnOrder([...selectedRowDrop, ...columnOrder])
-    }, [selectedRow])
+    }, [selectedRow, selectedRowDrop])
+    useEffect(() => {
+        setSelectedColumn(selectedColumnDrop)
+    }, [selectedColumnDrop])
     return (
         <>
             <HStack>
@@ -139,13 +142,13 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                 <Box border={'1px solid black'} w={300}>
                     <ul>
                         {data.length > 0 &&
-                            Object.keys(data[0]).map((i) => <DraggableItem key={i} name={i} />)}
+                            Object.keys(data[0]).map((i) => <ADraggableItem key={i} name={i} />)}
                     </ul>
                 </Box>
                 <Box height={'400px'}>
-                    <DroppableArea  onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} />
-                    <DroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} />
-                    <DroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} />
+                    <ADroppableArea onDrop={handleRow} title='ROW' droppedItems={selectedRowDrop} setDroppedItems={setSelectedRowDrop} />
+                    <ADroppableArea onDrop={handleColumn} title='COLUMNS' droppedItems={selectedColumnDrop} setDroppedItems={setSelectedColumnDrop} />
+                    <ADroppableArea onDrop={handleValue} title='VALUES' droppedItems={selectedValueDrop} />
                 </Box>
             </HStack>
             <div style={{ height: '100%', overflow: 'auto' }}>
@@ -184,10 +187,8 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                 }}
                                             >
                                                 {cell.getIsGrouped() ? (
-
                                                     // If it's a grouped cell, add an expander and row count
                                                     <>
-
                                                         {cell.column.id !== (grouping[grouping.length - 1]) ?
                                                             <button
                                                                 {...{
@@ -207,21 +208,19 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                                 )}{' '}
                                                                 {/* ({row.subRows.length}) */}
                                                             </button>
-                                                        :
-                                                        <button
-                                                            {...{
-                                                                // onClick: row.getToggleExpandedHandler(),                                                   
-                                                            }}
-                                                        >
-                                                         
-                                                            {flexRender(
-                                                                cell.column.columnDef.cell,
-                                                                cell.getContext()
-                                                            )}{' '}
-                                                            {/* ({row.subRows.length}) */}
-                                                        </button>
+                                                            :
+                                                            <button
+                                                                {...{
+                                                                    // onClick: row.getToggleExpandedHandler(),                                                   
+                                                                }}
+                                                            >
+                                                                {flexRender(
+                                                                    cell.column.columnDef.cell,
+                                                                    cell.getContext()
+                                                                )}{' '}
+                                                                {/* ({row.subRows.length}) */}
+                                                            </button>
                                                         }
-
                                                     </>
                                                 ) : cell.getIsAggregated() ? (
                                                     // If the cell is aggregated, use the Aggregated
@@ -251,4 +250,4 @@ const MultiLayeredColumn = ({ data }: DynamicDataProps) => {
     );
 }
 
-export default MultiLayeredColumn
+export default AMultiAndtD

@@ -9,6 +9,15 @@ import { newsales } from './datas/newsales.ts'
 import AReact from './AReactDnd/AReact.tsx'
 import MultiLayeredColumn from './MultiLayeredColumn.tsx'
 import AMultiLayeredColumn from './AReactDnd/AMultLayeredWithRearrange.tsx'
+import AAntDesign from './AReactDnd/AAntDesign.tsx'
+import AMultiAndtD from './AReactDnd/AMultiAntD.tsx'
+import Awit from './Practice/Awit.tsx'
+import Expand from './ExpandableRow/Expand.tsx'
+import ReactAnt from './ANT D WITH REACT-TABLE/ReactAnt.tsx'
+import App from './App.tsx'
+import AntTable from './AntTable.tsx'
+
+import AMultiAndtDers from './Organized/Aunty.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -38,7 +47,7 @@ const modifiedItems: any[] = newsale.map((item) => ({
   territoryCode: item.territoryCode,
   regionCode: item.regionCode,
   areaCode: item.areaCode,
-  ns_Total: item.ns_Total,
+  ns_Total: item.ns_Total, 
 }));
 // console.log(modifiedItems)
 
@@ -49,9 +58,20 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <DndProvider backend={HTML5Backend}>
 
       {/* <MultiLayeredColumn data={newsale} /> */}
-      <AMultiLayeredColumn data={newsale} />
-      <AReact />
+      {/* <AMultiLayeredColumn data={newsale} /> */}
+      {/* <AReact /> */}
 
+      {/* <AAntDesign /> */}
+
+  {/* <AMultiAndtD data={newsales}/> */}
+
+      {/* <Awit /> */}
+    {/* <Expand /> */}
+  {/* <ReactAnt /> */}
+  {/* <App /> */}
+  {/* <Orgynized data={newsales}/> */}
+
+  <AMultiAndtDers data={newsales}/>
     </DndProvider>
 
   </>,

@@ -141,9 +141,13 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
         setGrouping(selectedRowDrop)
         setColumnOrder([...selectedRowDrop, ...columnOrder])
     }, [selectedRow, selectedRowDrop])
-        useEffect(() => {
-            setSelectedColumn(selectedColumnDrop)
-        }, [selectedColumnDrop])
+
+    useEffect(() => {
+        setSelectedColumn(selectedColumnDrop)
+    }, [selectedColumnDrop])
+
+    // console.log(table.getPreExpandedRowModel())
+    console.log(data)
     return (
         <>
             <HStack>
@@ -223,7 +227,6 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                                     // onClick: row.getToggleExpandedHandler(),                                                   
                                                                 }}
                                                             >
-
                                                                 {flexRender(
                                                                     cell.column.columnDef.cell,
                                                                     cell.getContext()
@@ -231,7 +234,6 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                                                 {/* ({row.subRows.length}) */}
                                                             </button>
                                                         }
-
                                                     </>
                                                 ) : cell.getIsAggregated() ? (
                                                     // If the cell is aggregated, use the Aggregated
@@ -253,7 +255,7 @@ const AMultiLayeredColumn = ({ data }: DynamicDataProps) => {
                                     })}
                                 </tr>
                             )
-                        })}
+                        })} 
                     </tbody>
                 </table>
             </div>
