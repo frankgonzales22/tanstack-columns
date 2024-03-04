@@ -4,8 +4,8 @@ import React from 'react';
 
 interface TableDisplayComponentProps {
     table: any; // Type it accordingly with the actual table object type
-    grouping : any[]
-   
+    grouping: any[]
+
 }
 
 const TableDisplayComponent: React.FC<TableDisplayComponentProps> = ({ table, grouping }) => {
@@ -16,7 +16,12 @@ const TableDisplayComponent: React.FC<TableDisplayComponentProps> = ({ table, gr
                     {table.getHeaderGroups().map((headerGroup: any) => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map((header: any) => (
-                                <th key={header.id} style={{ padding: '10px' }}>
+                                <th key={header.id} 
+                                colSpan={header.colSpan}
+                                style={{
+                                    padding: '10px',
+                                    border: '1px solid black'
+                                }}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(header.column.columnDef.header, header.getContext())}

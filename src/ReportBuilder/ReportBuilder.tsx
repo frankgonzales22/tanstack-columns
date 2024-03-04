@@ -1,7 +1,7 @@
 // AMultiAndtD.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import { GroupingState, ExpandedState, ColumnOrderState,  getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import DataManipulationControls from "./DataManipulation";
+import DataManipulationControls from "./DragAndDropComponent";
 import TableDisplayComponent from "./TableDisplayComponent";
 import { generateNestedColumns } from "./GenerateNestedColumns";
 
@@ -10,7 +10,10 @@ interface DynamicDataProps {
     data: any[];
 }
 
-const AMultiAndtDers: React.FC<DynamicDataProps> = ({ data }) => {
+const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
+
+    
+    
     const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
     const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
     const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
@@ -107,4 +110,4 @@ const AMultiAndtDers: React.FC<DynamicDataProps> = ({ data }) => {
         </>
     );
 };
-export default AMultiAndtDers;
+export default ReportBuilder;

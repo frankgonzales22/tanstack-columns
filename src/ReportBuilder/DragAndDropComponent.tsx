@@ -4,7 +4,7 @@ import DraggableItem from "./DraggableItem";
 
 import DroppableArea from "./DroppableArea";
 
-interface DataManipulationControlsProps {
+interface DragAndDropComponentProps {
   handleClear: () => void;
   data: any[];
   handleRow: (item: { name: string }) => void;
@@ -17,7 +17,7 @@ interface DataManipulationControlsProps {
   setSelectedColumnDrop: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const DataManipulationControls: React.FC<DataManipulationControlsProps> = ({
+const DragAndDropComponent: React.FC<DragAndDropComponentProps> = ({
   handleClear,
   data,
   handleRow,
@@ -42,7 +42,7 @@ const DataManipulationControls: React.FC<DataManipulationControlsProps> = ({
             ))}
         </ul>
       </Box>
-      <Box height={"400px"}>
+      <Box >
         <DroppableArea
           onDrop={handleRow}
           title="ROW"
@@ -66,4 +66,4 @@ const DataManipulationControls: React.FC<DataManipulationControlsProps> = ({
   );
 };
 
-export default DataManipulationControls;
+export default DragAndDropComponent;

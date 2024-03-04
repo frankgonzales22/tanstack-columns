@@ -40,19 +40,18 @@ const AMultiAndtD = ({ data }: DynamicDataProps) => {
         // Generate nested columns hierarchy based on unique values
         const generateColumnsForItem = (index: number, parentName: string): NestedColumn[] => {
             const columnName = arrayOfSelected[index];
-            const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || []);
+            const uniqueValues = Array.from(uniqueValuesMap.get(columnName) || [])
             const columns: any[] = uniqueValues.map((value) => ({
                 header: String(value),
                 id: index === 0 ? String(value) : `${parentName}_${value}`,
                 aggregatedCell: (props: any) => {
-
                     const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
-                        const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_');
+                        const dynamicColumnKey = selectedColumn.map(column => row.original[column]).join('_')
                         if (dynamicColumnKey === props.column.columnDef.accessorKey) {
                             return totalSum + (row.original[selectedValue[0]] || 0); // Adding the value if it exists, otherwise adding 0
                         }
                         return totalSum;
-                    }, 0);
+                    }, 0)
                     return sum1 || 0; // Returning the sum or 0 if no sum is calculated
                 },
                 accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
@@ -60,14 +59,15 @@ const AMultiAndtD = ({ data }: DynamicDataProps) => {
             // If there are more levels to generate, recursively generate columns for the next level
             if (index < arrayOfSelected.length - 1) {
                 columns.forEach(column => {
-                    column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
-                });
+                    column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`)
+                })
             }
-            return columns;
+            return columns
         }
         // Initialize generation with the first item in arrayOfSelected
-        return generateColumnsForItem(0, parentName);
+        return generateColumnsForItem(0, parentName)
     }
+    
     const ultraDynamicColumns: any[] = useMemo(() => {
         return [
             ...(selectedRow[0] !== '' && selectedRow.length > 0
@@ -112,13 +112,10 @@ const AMultiAndtD = ({ data }: DynamicDataProps) => {
         setSelectedColumn([...selectedColumn, item.name]);
     }
     console.log('selected col', selectedColumn)
-
-
     const handleValue = (item: { name: string }) => {
         setSelectedValueDrop([item.name]);
         setSelectedValue([item.name]);
     }
-
     const handleClear = () => {
         setSelectedRowDrop([])
         setSelectedRow([])
@@ -127,7 +124,6 @@ const AMultiAndtD = ({ data }: DynamicDataProps) => {
         setSelectedValueDrop([])
         setSelectedValue([])
     }
-
     useEffect(() => {
         setGrouping(selectedRowDrop)
         setColumnOrder([...selectedRowDrop, ...columnOrder])
