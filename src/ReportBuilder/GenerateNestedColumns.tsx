@@ -45,14 +45,14 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
         const vals = Array.from(uniqueValuesMap.values());
         const dynamicTerritoryCode = vals[0]; // Assuming 'BT' comes from the first value
         const result = Array.from(new Set(testMultiLayer.filter((item: any) => item[selectedColumn[index-1]] === parentName).map((item: any) => item[selectedColumn[index]])));
-    
+        console.log(`index : ${index} ========= PARENT NAME : ${parentName}`)
         const columns: any[] = 
         index === 0 ?
         uniqueValues.map((value) => ({
-            id: index === 0 ? String(value) : `${parentName}_${value}`,
+            id: index === 0 ? String(value) : `${value}`,
             // header: String(value),
-            header: index === 0 ? String(value) : `${parentName}_${value}`,
-            accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
+            header: index === 0 ? String(value) : `${value}`,
+            accessorKey: index === 0 ? String(value) : `${value}`,
     
             enableSorting: true,
             aggregatedCell: (props: any) => {
@@ -72,10 +72,10 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
 
         :
         result.map((value) => ({
-            id: index === 0 ? String(value) : `${parentName}_${value}`,
+            id: index === 0 ? String(value) : `${value}`,
             // header: String(value),
             header: index === 0 ? String(value) : `${value}`,
-            accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
+            accessorKey: index === 0 ? String(value) : `${value}`,
     
             enableSorting: true,
             aggregatedCell: (props: any) => {
@@ -95,7 +95,7 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
         // If there are more levels to generate, recursively generate columns for the next level
         if (index < arrayOfSelected.length - 1) {
             columns.forEach(column => {
-                column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${parentName}_${column.header}`);
+                column.columns = generateColumnsForItem(index + 1, index === 0 ? String(column.header) : `${column.header}`);
             });
         }
         return columns;
