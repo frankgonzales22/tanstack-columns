@@ -44,7 +44,7 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
         const uniqueValues = Array.from(uniqueValuesMap.get(arrayOfSelected[index]) || []);
         const vals = Array.from(uniqueValuesMap.values());
         const dynamicTerritoryCode = vals[0]; // Assuming 'BT' comes from the first value
-        const result = Array.from(new Set(testMultiLayer.filter((item: any) => item['territoryCode'] === parentName).map((item: any) => item['regionCode'])));
+        const result = Array.from(new Set(testMultiLayer.filter((item: any) => item[selectedColumn[index-1]] === parentName).map((item: any) => item[selectedColumn[index]])));
     
         const columns: any[] = 
         index === 0 ?
@@ -74,7 +74,7 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
         result.map((value) => ({
             id: index === 0 ? String(value) : `${parentName}_${value}`,
             // header: String(value),
-            header: index === 0 ? String(value) : `${parentName}_${value}`,
+            header: index === 0 ? String(value) : `${value}`,
             accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
     
             enableSorting: true,
