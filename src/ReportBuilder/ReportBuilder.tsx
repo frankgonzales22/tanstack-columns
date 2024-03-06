@@ -72,7 +72,7 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
                 ? generateNestedColumns(selectedColumn, data, selectedColumn, selectedValue)
                 : [])
         ];
-    }, [data, selectedRow, selectedColumn, selectedValue])
+    }, [data, selectedRow, selectedColumn, selectedValue, selectedColumnDrop])
     //#endregion
     return (
         <>

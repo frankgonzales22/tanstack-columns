@@ -44,15 +44,15 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
         const uniqueValues = Array.from(uniqueValuesMap.get(arrayOfSelected[index]) || []);
         const vals = Array.from(uniqueValuesMap.values());
         const dynamicTerritoryCode = vals[0]; // Assuming 'BT' comes from the first value
-        const result = Array.from(new Set(testMultiLayer.filter((item: any) => item[selectedColumn[index-1]] === parentName).map((item: any) => item[selectedColumn[index]])));
-        console.log(`index : ${index} ========= PARENT NAME : ${parentName}`)
+        const result = Array.from(new Set(testMultiLayer.filter((item: any) => item[selectedColumn[index-1]] == parentName).map((item: any) => item[selectedColumn[index]])));
+        console.log(`index : ${index} ========= PARENT NAME : ${parentName} ======== `)
         const columns: any[] = 
         index === 0 ?
         uniqueValues.map((value) => ({
-            id: index === 0 ? String(value) : `${value}`,
+            id: index === 0 ? String(value) : `${parentName}_${value}`,
             // header: String(value),
             header: index === 0 ? String(value) : `${value}`,
-            accessorKey: index === 0 ? String(value) : `${value}`,
+            accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
     
             enableSorting: true,
             aggregatedCell: (props: any) => {
@@ -66,16 +66,14 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
                 }, 0);
                 return sum1 || 0; // Returning the sum or 0 if no sum is calculated
             },
-      
-   
         }))
 
         :
         result.map((value) => ({
-            id: index === 0 ? String(value) : `${value}`,
+            id: index === 0 ? String(value) : `${parentName}_${value}`,
             // header: String(value),
             header: index === 0 ? String(value) : `${value}`,
-            accessorKey: index === 0 ? String(value) : `${value}`,
+            accessorKey: index === 0 ? String(value) : `${parentName}_${value}`,
     
             enableSorting: true,
             aggregatedCell: (props: any) => {
@@ -83,11 +81,11 @@ export const generateNestedColumns = (arrayOfSelected: string[], testMultiLayer:
                 const sum1 = props.row?.leafRows?.reduce((totalSum: number, row: any) => {
                     const dynamicColumnKey = selectedColumn.map((column : any) => row.original[column]).join('_');
                     if (dynamicColumnKey === props.column.columnDef.accessorKey) {
-                        return totalSum + (row.original[selectedValue[0]] || 0); // Adding the value if it exists, otherwise adding 0
+                        return totalSum + (row.original[selectedValue[0]] || 0) // Adding the value if it exists, otherwise adding 0
                     }
-                    return totalSum;
+                    return totalSum ;
                 }, 0);
-                return sum1 || 0; // Returning the sum or 0 if no sum is calculated
+                return sum1  || 0; // Returning the sum or 0 if no sum is calculated
             },
       
    
