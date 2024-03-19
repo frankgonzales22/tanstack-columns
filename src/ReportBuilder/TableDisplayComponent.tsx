@@ -9,6 +9,8 @@ interface TableDisplayComponentProps {
 }
 
 const TableDisplayComponent: React.FC<TableDisplayComponentProps> = ({ table, grouping }) => {
+
+    console.log('table', table.getHeaderGroups())
     return (
         <div style={{ height: '100%', overflow: 'auto' }}>
             <table style={{ border: '1px solid black', margin: '20px' }}>

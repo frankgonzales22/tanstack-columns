@@ -73,6 +73,7 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
                 : [])
         ];
     }, [data, selectedRow, selectedColumn, selectedValue, selectedColumnDrop])
+
     //#endregion
     return (
         <>
