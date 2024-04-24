@@ -16,7 +16,7 @@ interface DragAndDropComponentProps {
   setSelectedRowDrop: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedColumnDrop: React.Dispatch<React.SetStateAction<string[]>>;
 }
-
+    
 const DragAndDropComponent: React.FC<DragAndDropComponentProps> = ({
   handleClear,
   data,

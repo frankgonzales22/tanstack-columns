@@ -12,7 +12,8 @@ interface DynamicDataProps {
 
 const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
 
-    
+        const [aggregatedItems, setAggregatedItems] = useState<any[]>([])
+
     
     const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
     const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
@@ -73,7 +74,6 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
                 : [])
         ];
     }, [data, selectedRow, selectedColumn, selectedValue, selectedColumnDrop])
-
     //#endregion
     return (
         <>

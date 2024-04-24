@@ -19,6 +19,7 @@ import AntTable from './AntTable.tsx'
 
 import ReportBuilder from './ReportBuilder/ReportBuilder.tsx'
 import CustomTable from './CustomTable.tsx'
+import { Transaction } from './PAYNAMICS/Transaction.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -48,7 +49,7 @@ const modifiedItems: any[] = newsale.map((item) => ({
   territoryCode: item.territoryCode,
   regionCode: item.regionCode,
   areaCode: item.areaCode,
-  ns_Total: item.ns_Total, 
+  ns_Total: item.ns_Total,
 }));
 // console.log(modifiedItems)
 
@@ -64,15 +65,16 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
       {/* <AAntDesign /> */}
 
-  {/* <AMultiAndtD data={newsales}/> */}
+      {/* <AMultiAndtD data={newsales}/> */}
 
       {/* <Awit /> */}
-    {/* <Expand /> */}
-  {/* <ReactAnt /> */}
-  {/* <App /> */}
-  {/* <Orgynized data={newsales}/> */}
-{/* <CustomTable /> */}
-  <ReportBuilder data={newsales}/>
+      {/* <Expand /> */}
+      {/* <ReactAnt /> */}
+      {/* <App /> */}
+      {/* <Orgynized data={newsales}/> */}
+      {/* <CustomTable /> */}
+      {/* <ReportBuilder data={newsales} /> */}
+      <Transaction />
     </DndProvider>
 
   </>,
