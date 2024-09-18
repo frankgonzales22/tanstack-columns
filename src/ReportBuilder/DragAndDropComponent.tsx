@@ -10,11 +10,15 @@ interface DragAndDropComponentProps {
   handleRow: (item: { name: string }) => void;
   handleColumn: (item: { name: string }) => void;
   handleValue: (item: { name: string }) => void;
+  handleFilter : (item: { name: string }) => void;
   selectedRowDrop: string[];
   selectedColumnDrop: string[];
   selectedValueDrop: string[];
+  selectedFilterDrop : string[];
   setSelectedRowDrop: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedColumnDrop: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedValueDrop: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedFilterDrop: React.Dispatch<React.SetStateAction<string[]>>;
 }
     
 const DragAndDropComponent: React.FC<DragAndDropComponentProps> = ({
@@ -23,11 +27,15 @@ const DragAndDropComponent: React.FC<DragAndDropComponentProps> = ({
   handleRow,
   handleColumn,
   handleValue,
+  handleFilter,
   selectedRowDrop,
   selectedColumnDrop,
   selectedValueDrop,
+  selectedFilterDrop,
   setSelectedRowDrop,
   setSelectedColumnDrop,
+  setSelectedValueDrop,
+  setSelectedFilterDrop,
 }) => {
   return (
     <HStack>
@@ -59,7 +67,14 @@ const DragAndDropComponent: React.FC<DragAndDropComponentProps> = ({
           onDrop={handleValue}
           title="VALUES"
           droppedItems={selectedValueDrop}
-          setDroppedItems={() => {}} // Dummy setDroppedItems function
+          setDroppedItems={setSelectedValueDrop} // Dummy setDroppedItems function
+        />
+
+        <DroppableArea
+          onDrop={handleFilter!}
+          title="FILTER"
+          droppedItems={selectedFilterDrop!}
+          setDroppedItems={setSelectedFilterDrop} // Dummy setDroppedItems function
         />
       </Box>
     </HStack>

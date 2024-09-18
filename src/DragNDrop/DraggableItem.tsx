@@ -1,10 +1,17 @@
 // DraggableItem.tsx
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { names } from '../Utilities/RenameDraggableItem';
 
 interface DraggableItemProps {
   name: string;
 }
+
+export const findLabelByName = (name: string) => {
+  const foundItem = names.find((item) => item.values.includes(name));
+  return foundItem ? foundItem.label : name;
+};
+
 
 const DraggableItem: React.FC<DraggableItemProps> = ({ name }) => {
   const [{ isDragging }, drag] = useDrag({

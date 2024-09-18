@@ -20,8 +20,11 @@ import AntTable from './AntTable.tsx'
 import ReportBuilder from './ReportBuilder/ReportBuilder.tsx'
 import CustomTable from './CustomTable.tsx'
 import { Transaction } from './PAYNAMICS/Transaction.tsx'
-import TableComponent from './1TANSTACK PRACTICE/ReactTable.tsx'
-import ExpandableTable from './1TANSTACK PRACTICE/ExpandedTable.tsx'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { fetchSummary } from './API/api.ts'
+import NewReportBuilder from './ReportBuilder/NewReportBuilder.tsx'
+import { ChakraProvider } from '@chakra-ui/react'
+import MyTable from './ANT D WITH REACT-TABLE/MyTable.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -52,34 +55,43 @@ const modifiedItems: any[] = newsale.map((item) => ({
   regionCode: item.regionCode,
   areaCode: item.areaCode,
   ns_Total: item.ns_Total,
+  // ns_Total: item.ns_Total,
 }));
 // console.log(modifiedItems)
+const queryClient = new QueryClient();
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <>
+    <ChakraProvider>
 
-    <DndProvider backend={HTML5Backend}>
+      <QueryClientProvider client={queryClient}>
 
-      {/* <MultiLayeredColumn data={yourData} /> */}
-      {/* <AMultiLayeredColumn data={newsale} /> */}
-      {/* <AReact /> */}
 
-      {/* <AAntDesign /> */}
+        <DndProvider backend={HTML5Backend}>
 
-      {/* <AMultiAndtD data={newsales}/> */}
+          {/* <MultiLayeredColumn data={yourData} /> */}
+          {/* <AMultiLayeredColumn data={data} /> */}
+          {/* <AReact /> */}
 
-      {/* <Awit /> */}
-      {/* <Expand /> */}
-      {/* <ReactAnt /> */}
-      {/* <App /> */}
-      {/* <Orgynized data={newsales}/> */}
-      {/* <CustomTable /> */}
-      {/* <ReportBuilder data={newsales} /> */}
-      <Transaction />
-      {/* <TableComponent /> */}
-      {/* <ExpandableTable /> */}
-    </DndProvider>
+          {/* <AAntDesign /> */}
+
+          {/* <AMultiAndtD data={newsales}/> */}
+
+          {/* <Awit /> */}
+          {/* <Expand /> */}
+          {/* <ReactAnt /> */}
+          {/* <App /> */}
+          {/* <Orgynized data={newsales}/> */}
+          {/* <CustomTable /> */}
+          {/* <ReportBuilder data={newsales} /> */}
+          {/* <Transaction /> */}
+          <NewReportBuilder />
+          {/* <MyTable /> */}
+        </DndProvider>
+      </QueryClientProvider>
+    </ChakraProvider>
+
 
   </>,
 )

@@ -1,6 +1,6 @@
 // AMultiAndtD.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import { GroupingState, ExpandedState, ColumnOrderState,  getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { GroupingState, ExpandedState, ColumnOrderState, getCoreRowModel, getExpandedRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import DataManipulationControls from "./DragAndDropComponent";
 import TableDisplayComponent from "./TableDisplayComponent";
 import { generateNestedColumns } from "./GenerateNestedColumns";
@@ -12,9 +12,9 @@ interface DynamicDataProps {
 
 const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
 
-        const [aggregatedItems, setAggregatedItems] = useState<any[]>([])
+    const [aggregatedItems, setAggregatedItems] = useState<any[]>([])
 
-    
+
     const [selectedRowDrop, setSelectedRowDrop] = useState<string[]>([]);
     const [selectedColumnDrop, setSelectedColumnDrop] = useState<string[]>([]);
     const [selectedValueDrop, setSelectedValueDrop] = useState<string[]>([]);
@@ -24,7 +24,15 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
     const [grouping, setGrouping] = useState<GroupingState>([]);
     const [expanded, setExpand] = useState<ExpandedState>({});
     const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+    const [selectedFilterDrop, setSelectedFilterDrop] = useState<any>([]);
+    const [itemToFilter, setItemToFilter] = useState<any>([]);
 
+
+    const handleFilter = (item: { name: string }) => {
+        if (!selectedFilterDrop.includes(item.name)) {
+            setSelectedFilterDrop([...selectedFilterDrop, item.name]);
+        }
+    };
     const handleRow = (item: { name: string }) => {
         if (!selectedRow.includes(item.name)) {
             // If it doesn't exist, add it to selectedRow
@@ -74,7 +82,12 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
                 : [])
         ];
     }, [data, selectedRow, selectedColumn, selectedValue, selectedColumnDrop])
+
+    console.log('data', data)
     //#endregion
+
+
+
     return (
         <>
             <DataManipulationControls
@@ -83,12 +96,17 @@ const ReportBuilder: React.FC<DynamicDataProps> = ({ data }) => {
                 handleRow={handleRow}
                 handleColumn={handleColumn}
                 handleValue={handleValue}
+                handleFilter={handleFilter}
                 selectedRowDrop={selectedRowDrop}
                 selectedColumnDrop={selectedColumnDrop}
                 selectedValueDrop={selectedValueDrop}
+                selectedFilterDrop={selectedFilterDrop}
                 setSelectedRowDrop={setSelectedRowDrop}
                 setSelectedColumnDrop={setSelectedColumnDrop}
+                setSelectedValueDrop={setSelectedValueDrop}
+                setSelectedFilterDrop={setSelectedFilterDrop}
             />
+            
             <TableDisplayComponent
                 table={useReactTable({
                     columns: ultraDynamicColumns,

@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import CryptoJS from 'crypto-js';
 
-interface WorkflowQuery {
-    merchant_id: string;
-    request_id: string;
-    org_trxid2: string;
-    signature: string;
-}
-
 // Define interfaces to represent the data structure
 interface RPFTransactionPayload {
     merchantId: string;
@@ -26,7 +19,6 @@ interface RPFTransactionPayload {
     expiry_limit: string;
     signature: string;
 }
-
 interface RPFCustomerInfo {
     fname: string;
     lname: string;
@@ -36,6 +28,7 @@ interface RPFCustomerInfo {
     mobile: string;
     dob: string;
     signature: string;
+
 }
 
 interface WORKFLOWTransactionPayload {
@@ -101,16 +94,6 @@ const generateCustomerSignature = (transaction: RPFCustomerInfo, merchantKey: st
         transaction.dob +
         merchantKey;
 
-    // Use your hashing function to generate the signature, e.g., SHA512
-    return sha512(signatureString).toLowerCase();
-}
-
-const generateQuerySignature = (transaction: WorkflowQuery, merchantKey: string) => {
-    const signatureString =
-        transaction.merchant_id +
-        transaction.request_id +
-        transaction.org_trxid2 +
-        merchantKey
     // Use your hashing function to generate the signature, e.g., SHA512
     return sha512(signatureString).toLowerCase();
 }
@@ -209,38 +192,19 @@ export const Transaction = () => {
 
     console.log(formattedDate); // Output formatted date to console
 
-// Get the current time
-const currentTime = new Date();
-
-// Add 40 minutes to the current time
-const newTime = new Date(currentTime.getTime() + 60 * 2 * 60 * 1000); // 40 minutes * 60 seconds * 1000 milliseconds
-
-// Format the new time as "yyyy-MM-dd HH:mm:ss" in the local time zone
-const year = newTime.getFullYear();
-const month = String(newTime.getMonth() + 1).padStart(2, '0');
-const day = String(newTime.getDate()).padStart(2, '0');
-const hours = String(newTime.getHours()).padStart(2, '0');
-const minutes = String(newTime.getMinutes()).padStart(2, '0');
-const seconds = String(newTime.getSeconds()).padStart(2, '0');
-
-const formattedNewTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-console.log(formattedNewTime);
-
     const [workflowTransaction, setWorkflowTransaction] = useState<WORKFLOWTransactionPayload>({
         merchant_id: paynamicsCredentialsWorkFlow.RPFNodeMerchantId,
-        request_id: 'HH10',
+        request_id: 'DDS9053',
         notification_url: 'https://webhook.site/aca4bd69-85f9-4429-8d55-585b2aa79ba9',
         // response_url: 'https://webhook.site/da2b1dc4-7ad8-4b42-85b5-eeb19e6c144d',
-        response_url: 'https://google.com',
-        cancel_url: 'https://testonline.stpeter.com.ph/CheckOut/CancelUrl',
+        response_url: 'https://testonline.stpeter.com.ph/CheckOut/CancelUrl',
+        cancel_url: 'https://testonline.stpeter.com.ph/CheckOut/',
         // pmethod: 'bank_otc',
         // pchannel: 'bdo_ph',
         payment_action: 'url_link',
         schedule: "",
         pmethod: 'nonbank_otc',
-        // pchannel: 'da5_ph',
-        pchannel: '711_ph',
+        pchannel: 'dp_ph',
         // payment_action: 'sms_invoice ',
         // pmethod: 'wallet',
         // pchannel: 'gc',
@@ -248,7 +212,7 @@ console.log(formattedNewTime);
         deferred_time: '',
         dp_balance_info: '',
         // amount: '31100.00',
-        amount: '1',
+        amount: '30204.00',
 
         // pchannel: 'gc',
         collection_method: 'single_pay',
@@ -257,7 +221,7 @@ console.log(formattedNewTime);
         pay_reference: '',
         payment_notification_status: '1',
         payment_notification_channel: '3',
-        expiry_limit: formattedNewTime,
+        expiry_limit: '',
         signature: '',
     });
     const [customerInfo, setCustomerInfo] = useState<RPFCustomerInfo>({
@@ -271,12 +235,7 @@ console.log(formattedNewTime);
         dob: "",
         signature: '',
     });
-    const [workflowQuery, setWorkflowQuery] = useState<WorkflowQuery>({
-        merchant_id: paynamicsCredentialsWorkFlow.RPFNodeMerchantId,
-        request_id: '202X',
-        org_trxid2: 'PY_NS-2024071700000868-61616',
-        signature: '',
-    });
+
 
     // Paynamics credentials
 
@@ -287,7 +246,6 @@ console.log(formattedNewTime);
         const generatedSignature = generateSignature(transaction, paynamicsCredentials.RPFNodeMerchantKey);
         const generatedCustomerInfo = generateCustomerSignature(customerInfo, paynamicsCredentialsWorkFlow.RPFNodeMerchantKey);
         const workflowSignature = generateWorkflowTransactionSignature(workflowTransaction, paynamicsCredentialsWorkFlow.RPFNodeMerchantKey)
-        const workflowQuerySignature = generateQuerySignature(workflowQuery, paynamicsCredentialsWorkFlow.RPFNodeMerchantKey)
         // Update transaction payload with generated signature
 
         setTransaction(prevTransaction => ({
@@ -303,37 +261,25 @@ console.log(formattedNewTime);
             ...prevTransaction,
             signature: workflowSignature,
         }))
-        setWorkflowQuery(prevTransaction => ({
-            ...prevTransaction,
-            signature: workflowQuerySignature,
-        }))
 
         // Now, you can proceed with making the request to Paynamics with updated transaction payload
     };
-
+    console.log('trans', transaction)
+    console.log('custom info', customerInfo)
     return (
-        <>
+        <div>
+            {/* Your JSX code here */}
+            {/* {JSON.stringify(transaction)} */}
+            {JSON.stringify(workflowTransaction)}
+            {JSON.stringify(customerInfo)}
+            <button onClick={handleSubmit}>Submit</button>
             <div>
-                {/* Your JSX code here */}
-                {/* {JSON.stringify(transaction)} */}
-                {JSON.stringify(workflowTransaction)}
-                {JSON.stringify(customerInfo)}
-                <button onClick={handleSubmit}>Submit</button>
-                <div>
-                    {/* <a href="https://payin.payserv.net/paygate/transactions/dragonpay/status/aganvDAvDkmknwwDwQaoAgmnDaXagEvo\" target="_blank\" rel="noopener noreferrer\">Click here to proceed payment</a> or follow this link to proceed with your payment: https://payin.payserv.net/paygate/transactions/dragonpay/status/aganvDAvDkmknwwDwQaoAgmnDaXagEvo */}
-                </div>
-                {/* <a href="https://payin.payserv.net/paygate/transactions/dragonpay/status/aalXwgmwEXvanEluEuvmgXuklDuovXlD"
+                {/* <a href="https://payin.payserv.net/paygate/transactions/dragonpay/status/aganvDAvDkmknwwDwQaoAgmnDaXagEvo\" target="_blank\" rel="noopener noreferrer\">Click here to proceed payment</a> or follow this link to proceed with your payment: https://payin.payserv.net/paygate/transactions/dragonpay/status/aganvDAvDkmknwwDwQaoAgmnDaXagEvo */}
+            </div>
+            <a href="https://payin.payserv.net/paygate/transactions/dragonpay/status/aalXwgmwEXvanEluEuvmgXuklDuovXlD"
                 target="_blank" rel="noopener noreferrer">
                 Click here to proceed payment
             </a> or follow this link to proceed with your payment: https: //payin.payserv.net/paygate/transactions/dragonpay/status/aalXwgmwEXvanEluEuvmgXuklDuovXlD
-             */}
-            </div>
-s
-            <div>
-                <h1>QUERY PO =============</h1>
-                {JSON.stringify(workflowQuery)}
-            </div>
-          
-        </>
+        </div>
     );
 };
