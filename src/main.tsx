@@ -20,6 +20,8 @@ import AntTable from './AntTable.tsx'
 import ReportBuilder from './ReportBuilder/ReportBuilder.tsx'
 import CustomTable from './CustomTable.tsx'
 import { Transaction } from './PAYNAMICS/Transaction.tsx'
+import TableComponent from './1TANSTACK PRACTICE/ReactTable.tsx'
+import ExpandableTable from './1TANSTACK PRACTICE/ExpandedTable.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -75,6 +77,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       {/* <CustomTable /> */}
       {/* <ReportBuilder data={newsales} /> */}
       <Transaction />
+      {/* <TableComponent /> */}
+      {/* <ExpandableTable /> */}
     </DndProvider>
 
   </>,

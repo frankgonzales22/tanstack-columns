@@ -209,19 +209,38 @@ export const Transaction = () => {
 
     console.log(formattedDate); // Output formatted date to console
 
+// Get the current time
+const currentTime = new Date();
+
+// Add 40 minutes to the current time
+const newTime = new Date(currentTime.getTime() + 60 * 2 * 60 * 1000); // 40 minutes * 60 seconds * 1000 milliseconds
+
+// Format the new time as "yyyy-MM-dd HH:mm:ss" in the local time zone
+const year = newTime.getFullYear();
+const month = String(newTime.getMonth() + 1).padStart(2, '0');
+const day = String(newTime.getDate()).padStart(2, '0');
+const hours = String(newTime.getHours()).padStart(2, '0');
+const minutes = String(newTime.getMinutes()).padStart(2, '0');
+const seconds = String(newTime.getSeconds()).padStart(2, '0');
+
+const formattedNewTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+console.log(formattedNewTime);
+
     const [workflowTransaction, setWorkflowTransaction] = useState<WORKFLOWTransactionPayload>({
         merchant_id: paynamicsCredentialsWorkFlow.RPFNodeMerchantId,
-        request_id: 'DDS9070',
+        request_id: 'HH10',
         notification_url: 'https://webhook.site/aca4bd69-85f9-4429-8d55-585b2aa79ba9',
         // response_url: 'https://webhook.site/da2b1dc4-7ad8-4b42-85b5-eeb19e6c144d',
-        response_url: 'https://testonline.stpeter.com.ph/CheckOut/CancelUrl',
-        cancel_url: 'https://testonline.stpeter.com.ph/CheckOut/',
+        response_url: 'https://google.com',
+        cancel_url: 'https://testonline.stpeter.com.ph/CheckOut/CancelUrl',
         // pmethod: 'bank_otc',
         // pchannel: 'bdo_ph',
         payment_action: 'url_link',
         schedule: "",
-        pmethod: 'creditcard',
-        pchannel: 'bdo_cc_ph',
+        pmethod: 'nonbank_otc',
+        // pchannel: 'da5_ph',
+        pchannel: '711_ph',
         // payment_action: 'sms_invoice ',
         // pmethod: 'wallet',
         // pchannel: 'gc',
@@ -229,7 +248,7 @@ export const Transaction = () => {
         deferred_time: '',
         dp_balance_info: '',
         // amount: '31100.00',
-        amount: '30204.00',
+        amount: '1',
 
         // pchannel: 'gc',
         collection_method: 'single_pay',
@@ -238,7 +257,7 @@ export const Transaction = () => {
         pay_reference: '',
         payment_notification_status: '1',
         payment_notification_channel: '3',
-        expiry_limit: '',
+        expiry_limit: formattedNewTime,
         signature: '',
     });
     const [customerInfo, setCustomerInfo] = useState<RPFCustomerInfo>({
@@ -254,9 +273,8 @@ export const Transaction = () => {
     });
     const [workflowQuery, setWorkflowQuery] = useState<WorkflowQuery>({
         merchant_id: paynamicsCredentialsWorkFlow.RPFNodeMerchantId,
-        request_id: '133X',
-        org_trxid2: 'DDS9070',
-
+        request_id: '202X',
+        org_trxid2: 'PY_NS-2024071700000868-61616',
         signature: '',
     });
 
@@ -292,8 +310,7 @@ export const Transaction = () => {
 
         // Now, you can proceed with making the request to Paynamics with updated transaction payload
     };
-    console.log('trans', transaction)
-    console.log('custom info', customerInfo)
+
     return (
         <>
             <div>
@@ -316,6 +333,7 @@ export const Transaction = () => {
                 <h1>QUERY PO =============</h1>
                 {JSON.stringify(workflowQuery)}
             </div>
+          
         </>
     );
 };
