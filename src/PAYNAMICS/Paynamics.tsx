@@ -12,7 +12,7 @@ const Paynamics = () => {
       
         return signature;
       };
-      
+      console.log('eyy')
       const makePaymentRequest = (params : any, merchantKey : string) => {
         // Generate signature
         const signature = generateSignature(params, merchantKey);
