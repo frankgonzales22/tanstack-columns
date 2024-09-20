@@ -25,6 +25,7 @@ import { fetchSummary } from './API/api.ts'
 import NewReportBuilder from './ReportBuilder/NewReportBuilder.tsx'
 import { ChakraProvider } from '@chakra-ui/react'
 import MyTable from './ANT D WITH REACT-TABLE/MyTable.tsx'
+import CombinedData from './ANT D WITH REACT-TABLE/CombinedData.tsx'
 
 const yourData = [
   { category: 'A', value: 10, date: '2023-01-01' },
@@ -87,6 +88,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           {/* <ReportBuilder data={newsales} /> */}
           {/* <Transaction /> */}
           <NewReportBuilder />
+          {/* <CombinedData /> */}
           {/* <MyTable /> */}
         </DndProvider>
       </QueryClientProvider>

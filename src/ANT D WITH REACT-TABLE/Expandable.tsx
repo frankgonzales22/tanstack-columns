@@ -96,7 +96,22 @@ const ExpandableTable: React.FC = () => {
         return indexA - indexB;
     };
     const customSorter2 = (a: string, b: string) => {
-        return monthOrder.indexOf(a.toUpperCase()) - monthOrder.indexOf(b.toUpperCase());
+        // Convert both to uppercase for case-insensitive comparison
+        const indexA = monthOrder.indexOf(a.toUpperCase());
+        const indexB = monthOrder.indexOf(b.toUpperCase());
+    
+        // If both values are found in monthOrder, sort by monthOrder index
+        if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+        }
+    
+        // If one value is not in monthOrder, prioritize the one that is in the list
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+    
+        // If neither value is in monthOrder, fallback to alphabetical sorting
+        // Use localeCompare to handle both letters and numbers correctly
+        return a.localeCompare(b, undefined, { numeric: true });
     };
     // const columnKey = selectedColumnDrop[selectedColumnDrop.length - 1];
     const aggregatedData = filteredDataForTable.reduce((acc: any, item: any) => {
@@ -176,9 +191,9 @@ const ExpandableTable: React.FC = () => {
 
         // Sort the values if the current column represents a month
         if (currentColumn.toLowerCase()) {
-            // uniqueValues = uniqueValues.sort((a, b) => {
-            //     return monthOrder.indexOf(a.toUpperCase()) - monthOrder.indexOf(b.toUpperCase());
-            // });
+            uniqueValues = uniqueValues.sort((a, b) => {
+                return monthOrder.indexOf(a.toUpperCase()) - monthOrder.indexOf(b.toUpperCase());
+            });
             uniqueValues = uniqueValues.sort(customSorter2);
             // uniqueValues = uniqueValues;
         }
@@ -367,7 +382,7 @@ const ExpandableTable: React.FC = () => {
             sorter: (a: any, b: any) => {
                 const aValue = a[selectedRowDrop[0]] ?? '';
                 const bValue = b[selectedRowDrop[0]] ?? '';
-                return customSorter2(aValue.toUpperCase(), bValue.toUpperCase());
+                return customSorter4(aValue.toUpperCase(), bValue.toUpperCase());
                 // return (aValue.toUpperCase(), bValue.toUpperCase());
             },
             defaultSortOrder: 'ascend' as SortOrder, // Set default sort order to ascending
@@ -390,7 +405,6 @@ const ExpandableTable: React.FC = () => {
         }),
     ]   
 
-    console.log('bxx')
 
     useEffect(() => {
         //THIS IS FOR DISPLAY OF FILTER INSIDE THE FILTER DROP BOX
